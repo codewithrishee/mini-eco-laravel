@@ -1,0 +1,819 @@
+
+    /* ---------- ROOT VARIABLES ---------- */
+    :root {
+        --primary-green: #1e4a3d;
+        --primary-dark: #153b31;
+        --primary-light: #2d6b5a;
+        --gold: #c9a84c;
+        --gold-light: #fddb6d;
+        --gold-pale: #f5e6c8;
+        --gray-bg: #f0f4f2;
+        --card-shadow: 0 2px 24px rgba(0, 0, 0, 0.06);
+        --card-hover-shadow: 0 12px 40px rgba(0, 0, 0, 0.10);
+        --radius-lg: 20px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
+        --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* ---------- UTILITY HELPERS ---------- */
+    .bg-gray-soft {
+        background-color: var(--gray-bg);
+    }
+    .section-padding {
+        padding: 4.5rem 0;
+    }
+    .section-tag {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--gold);
+        background: rgba(201, 168, 76, 0.12);
+        padding: 0.3rem 1.2rem;
+        border-radius: 30px;
+        margin-bottom: 0.75rem;
+    }
+    .section-heading {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #1a2d29;
+        margin-bottom: 0.5rem;
+    }
+    .section-heading .highlight,
+    .hero-title .highlight,
+    .promise-heading .highlight,
+    .newsletter-title .highlight {
+        color: var(--gold);
+        position: relative;
+    }
+    .section-subtitle {
+        color: #6a7f7a;
+        font-size: 1.05rem;
+        font-weight: 400;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* ---------- BUTTON OVERRIDES (keep consistent) ---------- */
+    .btn-primary {
+        background-color: var(--primary-green);
+        border-color: var(--primary-green);
+        color: #fff;
+        border-radius: 40px;
+        padding: 0.65rem 2rem;
+        font-weight: 600;
+        transition: var(--transition);
+        font-size: 0.9rem;
+    }
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(30, 74, 61, 0.25);
+    }
+    .btn-primary i {
+        transition: var(--transition);
+    }
+    .btn-primary:hover i {
+        transform: translateX(4px);
+    }
+
+    /* ============================================================
+       SECTION 1: HERO BANNER
+       ============================================================ */
+    .contact-hero {
+        background: linear-gradient(135deg, #1a2d29 0%, #1e4a3d 60%, #2d6b5a 100%);
+        min-height: 350px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: rgba(201, 168, 76, 0.06);
+        pointer-events: none;
+    }
+    .contact-hero::after {
+        content: '✉';
+        position: absolute;
+        bottom: -40px;
+        left: -20px;
+        font-size: 12rem;
+        opacity: 0.04;
+        color: #fff;
+        pointer-events: none;
+    }
+    .contact-hero-overlay {
+        width: 100%;
+        min-height: 350px;
+        position: relative;
+        z-index: 2;
+    }
+    .hero-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.10);
+        backdrop-filter: blur(4px);
+        color: var(--gold-light);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+        padding: 0.4rem 1.6rem;
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 1rem;
+    }
+    .hero-title {
+        font-size: 3.6rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -0.5px;
+    }
+    .hero-title .highlight {
+        color: var(--gold-light);
+    }
+    .hero-subtitle {
+        font-size: 1.15rem;
+        color: rgba(255, 255, 255, 0.75);
+        font-weight: 300;
+        margin-top: 0.25rem;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.3px;
+    }
+    .contact-hero .breadcrumb {
+        background: transparent;
+        padding: 0;
+        justify-content: center;
+    }
+    .contact-hero .breadcrumb-item a {
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        font-weight: 400;
+        transition: var(--transition);
+    }
+    .contact-hero .breadcrumb-item a:hover {
+        color: var(--gold-light);
+    }
+    .contact-hero .breadcrumb-item.active {
+        color: #fff;
+        font-weight: 500;
+    }
+    .contact-hero .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.3);
+        content: '/';
+    }
+
+    /* ============================================================
+       SECTION 2: CONTACT INFO CARDS
+       ============================================================ */
+    .contact-info-card {
+        background: #fff;
+        border-radius: var(--radius-md);
+        padding: 2rem 1.6rem;
+        text-align: center;
+        box-shadow: var(--card-shadow);
+        border: 1px solid #eef3f1;
+        transition: var(--transition);
+        height: 100%;
+    }
+    .contact-info-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--card-hover-shadow);
+        border-color: rgba(201, 168, 76, 0.20);
+    }
+    .contact-info-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+        background: rgba(30, 74, 61, 0.06);
+        color: var(--primary-green);
+        transition: var(--transition);
+    }
+    .contact-info-card:hover .contact-info-icon {
+        background: var(--primary-green);
+        color: #fff;
+        transform: scale(1.05);
+    }
+    .contact-info-card h4 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a2d29;
+        margin-bottom: 0.4rem;
+    }
+    .contact-info-card p {
+        color: #5a6f6a;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 0;
+    }
+
+    /* ============================================================
+       SECTION 3: CONTACT FORM
+       ============================================================ */
+    .contact-form-card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        padding: 2.5rem 2.8rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid #eef3f1;
+    }
+    .contact-form-card .form-control {
+        border-radius: var(--radius-sm);
+        padding: 0.7rem 1.2rem;
+        border: 1px solid #dde5e2;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        background: #fafcfb;
+    }
+    .contact-form-card .form-control:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+        background: #fff;
+    }
+    .contact-form-card .form-control.is-valid {
+        border-color: var(--primary-green);
+    }
+    .contact-form-card .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+    .contact-form-card textarea.form-control {
+        min-height: 140px;
+        resize: vertical;
+    }
+    .contact-form-card .form-label {
+        font-weight: 600;
+        color: #1a2d29;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+    }
+
+    /* ============================================================
+       SECTION 4: STORE INFORMATION
+       ============================================================ */
+    .store-info-card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        padding: 2.5rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid #eef3f1;
+        height: 100%;
+        transition: var(--transition);
+    }
+    .store-info-card:hover {
+        box-shadow: var(--card-hover-shadow);
+        transform: translateY(-4px);
+    }
+    .store-info-card img {
+        border-radius: var(--radius-md);
+        width: 100%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+    }
+    .store-info-card h4 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1a2d29;
+        margin-bottom: 0.75rem;
+    }
+    .store-info-card p {
+        color: #5a6f6a;
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+    .store-hours-table {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+    .store-hours-table td {
+        padding: 0.4rem 0;
+        color: #4a5f5a;
+        border-bottom: 1px solid #eef3f1;
+    }
+    .store-hours-table td:last-child {
+        font-weight: 500;
+        color: #1a2d29;
+    }
+
+    /* ============================================================
+       SECTION 5: FAQ CARDS
+       ============================================================ */
+   /* ================================================================ */
+/* FAQ SECTION — ACCORDION STYLES                                   */
+/* (matches original card design, now with expand/collapse)        */
+/* ================================================================ */
+
+/* ---------- SECTION CONTAINER ---------- */
+.faq-section {
+    padding: 80px 0;
+}
+
+.bg-gray-soft {
+    background-color: #f8f9fc;
+}
+
+.section-padding {
+    padding: 80px 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ---------- SECTION HEADER ---------- */
+.section-header {
+    margin-bottom: 50px;
+}
+
+.section-tag {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: black;
+    background: rgba(108, 122, 154, 0.10);
+    padding: 6px 18px;
+    border-radius: 30px;
+    margin-bottom: 12px;
+}
+
+.section-heading {
+    font-size: 38px;
+    font-weight: 700;
+    color: #1a1f2e;
+    margin-bottom: 8px;
+}
+
+.section-heading .highlight {
+    color: var(--gold);
+    position: relative;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    color: #6c7a9a;
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* ---------- ACCORDION WRAPPER ---------- */
+.accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 820px;
+    margin: 0 auto;
+}
+
+/* ---------- FAQ CARD (accordion item) ---------- */
+.faq-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+    overflow: hidden;
+}
+
+.faq-card:hover {
+    box-shadow: 0 8px 32px rgba(74, 108, 247, 0.08);
+    border-color: rgba(74, 108, 247, 0.12);
+}
+
+/* ---------- ACCORDION HEADER (the clickable question) ---------- */
+.accordion-header {
+    margin: 0;
+}
+
+.accordion-header h5 {
+    margin: 0;
+}
+
+/* ---------- ACCORDION BUTTON ---------- */
+.accordion-button {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 20px 28px;
+    background: transparent;
+    border: none;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1a1f2e;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    border-radius: 0;
+    position: relative;
+    font-family: inherit;
+    line-height: 1.4;
+}
+
+.accordion-button:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.accordion-button:hover {
+    background: rgba(74, 108, 247, 0.03);
+}
+
+.accordion-button .bi {
+    font-size: 20px;
+    color: #4a6cf7;
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+}
+
+/* arrow indicator (Bootstrap default override) */
+/* .accordion-button::after {
+    content: "\F282";
+    font-family: "bootstrap-icons";
+    font-size: 18px;
+    margin-left: auto;
+    transition: transform 0.3s ease;
+    color: #9aa5b9;
+    flex-shrink: 0;
+}
+
+.accordion-button:not(.collapsed)::after {
+    transform: rotate(180deg);
+    color: #4a6cf7;
+} */
+
+/* when expanded, keep icon color */
+.accordion-button:not(.collapsed) {
+    background: rgba(74, 108, 247, 0.04);
+    color: #1a1f2e;
+    box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) .bi {
+    color: #4a6cf7;
+}
+
+/* ---------- ACCORDION BODY (the answer) ---------- */
+.accordion-body {
+    padding: 0 28px 24px 28px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #4a5268;
+    background: transparent;
+}
+
+/* ---------- COLLAPSE ANIMATION ---------- */
+.accordion-collapse {
+    transition: height 0.28s ease;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .section-heading {
+        font-size: 28px;
+    }
+
+    .accordion-button {
+        font-size: 15px;
+        padding: 16px 20px;
+        gap: 12px;
+    }
+
+    .accordion-body {
+        font-size: 15px;
+        padding: 0 20px 18px 20px;
+    }
+
+    .accordion-button .bi {
+        font-size: 18px;
+    }
+
+    .faq-section {
+        padding: 56px 0;
+    }
+
+    .section-padding {
+        padding: 56px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .accordion-button {
+        font-size: 14px;
+        padding: 14px 16px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .accordion-button .bi {
+        font-size: 16px;
+    }
+
+    .accordion-body {
+        font-size: 14px;
+        padding: 0 16px 16px 16px;
+    }
+
+    .section-heading {
+        font-size: 24px;
+    }
+}
+
+    /* ============================================================
+       SECTION 6: MAP
+       ============================================================ */
+    .map-container {
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        border: 1px solid #eef3f1;
+        height: 400px;
+        background: #e8eeec;
+    }
+    .map-container iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+    }
+
+    /* ============================================================
+       SECTION 7: SUPPORT BANNER
+       ============================================================ */
+    .support-banner {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-light) 100%);
+        border-radius: var(--radius-lg);
+        padding: 3rem 2.5rem;
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+    }
+    .support-banner::before {
+        content: '❤';
+        position: absolute;
+        right: -30px;
+        bottom: -40px;
+        font-size: 12rem;
+        opacity: 0.05;
+        color: #fff;
+        pointer-events: none;
+    }
+    .support-banner h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    .support-banner h2 .highlight {
+        color: var(--gold-light);
+    }
+    .support-banner p {
+        font-size: 1.05rem;
+        opacity: 0.85;
+        max-width: 550px;
+        margin: 0 auto 1.5rem;
+        font-weight: 300;
+    }
+    .btn-support {
+        background: var(--gold);
+        color: #1a2d29;
+        border: none;
+        border-radius: 40px;
+        padding: 0.7rem 2.4rem;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    .btn-support:hover {
+        background: var(--gold-light);
+        color: #1a2d29;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(201, 168, 76, 0.30);
+    }
+    .btn-support i {
+        transition: var(--transition);
+    }
+    .btn-support:hover i {
+        transform: translateX(4px);
+    }
+
+    /* ============================================================
+       SECTION 8: NEWSLETTER
+       ============================================================ */
+    .newsletter-section {
+        background: var(--gray-bg);
+    }
+    .newsletter-card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        padding: 2.5rem 3rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid #eef3f1;
+    }
+    .newsletter-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a2d29;
+        margin-bottom: 0.25rem;
+    }
+    .newsletter-title .highlight {
+        color: var(--gold);
+    }
+    .newsletter-desc {
+        color: #5a6f6a;
+        font-size: 0.95rem;
+        margin-bottom: 0;
+    }
+    .newsletter-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .newsletter-form .form-control {
+        flex: 1;
+        min-width: 200px;
+        border-radius: 40px;
+        border: 1px solid #dde5e2;
+        padding: 0.7rem 1.4rem;
+        font-size: 0.9rem;
+        background: var(--gray-bg);
+        transition: var(--transition);
+    }
+    .newsletter-form .form-control:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+        background: #fff;
+        outline: none;
+    }
+    .btn-subscribe {
+        background: var(--primary-green);
+        color: #fff;
+        border: none;
+        border-radius: 40px;
+        padding: 0.7rem 2rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-subscribe:hover {
+        background: var(--primary-dark);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(30, 74, 61, 0.20);
+    }
+    .btn-subscribe i {
+        transition: var(--transition);
+    }
+    .btn-subscribe:hover i {
+        transform: translateX(4px);
+    }
+
+    /* ============================================================
+       RESPONSIVE DESIGN
+       ============================================================ */
+    @media (max-width: 992px) {
+        .section-padding {
+            padding: 3.5rem 0;
+        }
+        .hero-title {
+            font-size: 2.8rem;
+        }
+        .section-heading {
+            font-size: 2rem;
+        }
+        .contact-form-card {
+            padding: 2rem 1.8rem;
+        }
+        .support-banner {
+            padding: 2.5rem 1.8rem;
+        }
+        .support-banner h2 {
+            font-size: 1.8rem;
+        }
+        .newsletter-card {
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+        .newsletter-form {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.2rem;
+        }
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        .contact-hero {
+            min-height: 300px;
+        }
+        .contact-hero-overlay {
+            min-height: 300px;
+        }
+        .section-heading {
+            font-size: 1.7rem;
+        }
+        .section-padding {
+            padding: 2.5rem 0;
+        }
+        .contact-form-card {
+            padding: 1.8rem 1.5rem;
+        }
+        .store-info-card {
+            padding: 1.8rem;
+        }
+        .faq-card {
+            padding: 1.2rem 1.4rem;
+        }
+        .support-banner h2 {
+            font-size: 1.6rem;
+        }
+        .map-container {
+            height: 300px;
+        }
+        .newsletter-title {
+            font-size: 1.3rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        .contact-hero {
+            min-height: 260px;
+        }
+        .contact-hero-overlay {
+            min-height: 260px;
+        }
+        .section-heading {
+            font-size: 1.5rem;
+        }
+        .support-banner {
+            padding: 2rem 1.2rem;
+        }
+        .support-banner h2 {
+            font-size: 1.4rem;
+        }
+        .newsletter-card {
+            padding: 1.5rem 1.2rem;
+        }
+        .newsletter-form .form-control {
+            min-width: 100%;
+        }
+        .btn-subscribe {
+            width: 100%;
+            justify-content: center;
+        }
+        .contact-info-card {
+            padding: 1.5rem 1.2rem;
+        }
+        .contact-form-card {
+            padding: 1.5rem 1.2rem;
+        }
+        .hero-badge {
+            font-size: 0.6rem;
+            padding: 0.3rem 1.2rem;
+        }
+        .section-tag {
+            font-size: 0.6rem;
+            padding: 0.2rem 1rem;
+        }
+        .btn-primary,
+        .btn-support {
+            width: 100%;
+            justify-content: center;
+        }
+    }
