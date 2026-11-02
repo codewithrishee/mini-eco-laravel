@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html
 
 RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
     /etc/apache2/sites-available/*.conf \
@@ -24,10 +24,14 @@ WORKDIR /var/www/html
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction \
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
     && npm ci \
     && npm run build \
     && chown -R www-data:www-data storage bootstrap/cache
+
+COPY isrgrootx1.pem /usr/local/share/ca-certificates/tidb-ca.crt
+
+RUN update-ca-certificates
 
 RUN printf '%s\n' \
     '<?php' \
@@ -45,8 +49,6 @@ RUN printf '%s\n' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-app \
     && chmod +x /usr/local/bin/start-app
-    COPY isrgrootx1.pem /usr/local/share/ca-certificates/tidb-ca.crt
-    RUN update-ca-certificates
 
 EXPOSE 10000
 
