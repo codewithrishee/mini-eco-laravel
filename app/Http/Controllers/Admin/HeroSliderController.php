@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class HeroSliderController extends Controller
 {
@@ -34,59 +35,65 @@ class HeroSliderController extends Controller
         'badge' => 'nullable|string|max:255',
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',
-
         'button1_text' => 'nullable|string|max:255',
         'button1_link' => 'nullable|string|max:255',
-
         'button2_text' => 'nullable|string|max:255',
         'button2_link' => 'nullable|string|max:255',
-
         'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-
         'display_order' => 'required|integer',
-
         'status' => 'required|boolean',
     ]);
 
-   $imageName = null;
+    try {
+        $imageName = null;
 
-if ($request->hasFile('image')) {
-    $image = $request->file('image');
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $uploadPath = public_path('uploads/hero-sliders');
 
-    $uploadPath = public_path('uploads/hero-sliders');
+            if (!is_dir($uploadPath) &&
+                !mkdir($uploadPath, 0755, true) &&
+                !is_dir($uploadPath)) {
+                throw new \RuntimeException(
+                    'Could not create hero slider upload directory.'
+                );
+            }
 
-    if (!is_dir($uploadPath)) {
-        mkdir($uploadPath, 0755, true);
-    }
+            $imageName = uniqid('slider_', true) . '.' .
+                $image->getClientOriginalExtension();
 
-    $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move($uploadPath, $imageName);
+        }
 
-    $image->move($uploadPath, $imageName);
-}
+        HeroSlider::create([
+            'badge' => $request->badge,
+            'title' => $request->title,
+            'description' => $request->description,
+            'button1_text' => $request->button1_text,
+            'button1_link' => $request->button1_link,
+            'button2_text' => $request->button2_text,
+            'button2_link' => $request->button2_link,
+            'image' => $imageName,
+            'display_order' => $request->display_order,
+            'status' => $request->status,
+        ]);
 
-    HeroSlider::create([
-
-        'badge' => $request->badge,
-        'title' => $request->title,
-        'description' => $request->description,
-
-        'button1_text' => $request->button1_text,
-        'button1_link' => $request->button1_link,
-
-        'button2_text' => $request->button2_text,
-        'button2_link' => $request->button2_link,
-
-        'image' => $imageName,
-
-        'display_order' => $request->display_order,
-
-        'status' => $request->status,
-
-    ]);
-
-    return redirect()
+        return redirect()
             ->route('admin.hero-sliders.index')
             ->with('success', 'Hero Slider Added Successfully.');
+
+    } catch (\Throwable $e) {
+        Log::error('Hero Slider Store Failed', [
+            'message' => $e->getMessage(),
+            'exception' => get_class($e),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ]);
+
+        return back()
+            ->withInput()
+            ->with('error', 'Hero slider save failed. Please check application logs.');
+    }
 }
     /**
      * Display the specified resource.
