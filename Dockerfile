@@ -17,44 +17,26 @@ WORKDIR /var/www/html
 
 COPY . .
 
-ENV APP_ENV=production
-ENV APP_DEBUG=false
-ENV DB_CONNECTION=mysql
-
-# Temporary SQLite database for build-time Artisan commands
-RUN mkdir -p database storage/framework/cache/data \
-    storage/framework/sessions storage/framework/views bootstrap/cache \
-    && touch database/database.sqlite
-
-# Install PHP dependencies and build frontend assets
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
     && npm ci \
     && npm run build \
     && chown -R www-data:www-data storage bootstrap/cache database
 
-# TiDB TLS certificate
 COPY isrgrootx1.pem /usr/local/share/ca-certificates/tidb-ca.crt
-RUN update-ca-certificates
 
-# Configure Apache to use Render's port
-RUN printf '%s\n' \
-    '<?php' \
-    '$port = (int) (getenv("PORT") ?: 10000);' \
-    'file_put_contents("/etc/apache2/ports.conf", "Listen " . $port . "\n");' \
-    'file_put_contents("/etc/apache2/sites-available/000-default.conf", "<VirtualHost *:" . $port . ">\nDocumentRoot /var/www/html/public\n<Directory /var/www/html/public>\nAllowOverride All\nRequire all granted\n</Directory>\n</VirtualHost>\n");' \
-    '?>' > /tmp/configure.php
+RUN update-ca-certificates
 
 RUN printf '%s\n' \
     '#!/bin/sh' \
     'set -e' \
-    'php /tmp/configure.php' \
+    'PORT="${PORT:-10000}"' \
+    'echo "Listen ${PORT}" > /etc/apache2/ports.conf' \
+    'printf "<VirtualHost *:%s>\nDocumentRoot /var/www/html/public\n<Directory /var/www/html/public>\nAllowOverride All\nRequire all granted\n</Directory>\n</VirtualHost>\n" "$PORT" > /etc/apache2/sites-available/000-default.conf' \
     'mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache' \
     'chown -R www-data:www-data storage bootstrap/cache' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-app \
     && chmod +x /usr/local/bin/start-app
-
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 EXPOSE 10000
 
