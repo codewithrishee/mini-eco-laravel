@@ -35,6 +35,7 @@ RUN printf '%s\n' \
     'mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache' \
     'chown -R www-data:www-data storage bootstrap/cache' \
     'php artisan migrate --force' \
+    'php artisan db:seed --force' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-app \
     && chmod +x /usr/local/bin/start-app
