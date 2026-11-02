@@ -13,31 +13,36 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html
-
-RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/sites-available/*.conf \
-    /etc/apache2/apache2.conf \
-    /etc/apache2/conf-available/*.conf
-
 WORKDIR /var/www/html
 
 COPY . .
 
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+ENV DB_CONNECTION=mysql
+
+# Temporary SQLite database for build-time Artisan commands
+RUN mkdir -p database storage/framework/cache/data \
+    storage/framework/sessions storage/framework/views bootstrap/cache \
+    && touch database/database.sqlite
+
+# Install PHP dependencies and build frontend assets
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
     && npm ci \
     && npm run build \
-    && chown -R www-data:www-data storage bootstrap/cache
+    && composer run-script post-autoload-dump --no-dev --no-interaction \
+    && chown -R www-data:www-data storage bootstrap/cache database
 
+# TiDB TLS certificate
 COPY isrgrootx1.pem /usr/local/share/ca-certificates/tidb-ca.crt
-
 RUN update-ca-certificates
 
+# Configure Apache to use Render's port
 RUN printf '%s\n' \
     '<?php' \
-    '$port = getenv("PORT") ?: "10000";' \
-    'file_put_contents("/etc/apache2/ports.conf", "Listen " . intval($port) . "\n");' \
-    'file_put_contents("/etc/apache2/sites-available/000-default.conf", "<VirtualHost *:" . intval($port) . ">\nDocumentRoot /var/www/html/public\n<Directory /var/www/html/public>\nAllowOverride All\nRequire all granted\n</Directory>\n</VirtualHost>\n");' \
+    '$port = (int) (getenv("PORT") ?: 10000);' \
+    'file_put_contents("/etc/apache2/ports.conf", "Listen " . $port . "\n");' \
+    'file_put_contents("/etc/apache2/sites-available/000-default.conf", "<VirtualHost *:" . $port . ">\nDocumentRoot /var/www/html/public\n<Directory /var/www/html/public>\nAllowOverride All\nRequire all granted\n</Directory>\n</VirtualHost>\n");' \
     '?>' > /tmp/configure.php
 
 RUN printf '%s\n' \
@@ -49,6 +54,8 @@ RUN printf '%s\n' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-app \
     && chmod +x /usr/local/bin/start-app
+
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 EXPOSE 10000
 
