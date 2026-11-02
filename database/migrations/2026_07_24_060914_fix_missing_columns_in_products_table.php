@@ -8,27 +8,33 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
+        if (!Schema::hasColumn('products', 'short_description')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->text('short_description')->nullable();
+            });
+        }
 
-            $table->text('short_description')->nullable();
-            $table->string('meta_title')->nullable();
-            $table->text('meta_description')->nullable();
-            $table->string('meta_keywords')->nullable();
+        if (!Schema::hasColumn('products', 'meta_title')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->string('meta_title')->nullable();
+            });
+        }
 
-        });
+        if (!Schema::hasColumn('products', 'meta_description')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->text('meta_description')->nullable();
+            });
+        }
+
+        if (!Schema::hasColumn('products', 'meta_keywords')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->string('meta_keywords')->nullable();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-
-            $table->dropColumn([
-                'short_description',
-                'meta_title',
-                'meta_description',
-                'meta_keywords'
-            ]);
-
-        });
+        // Existing database columns ko automatically delete nahi karenge.
     }
 };
