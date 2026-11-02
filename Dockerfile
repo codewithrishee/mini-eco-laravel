@@ -45,6 +45,8 @@ RUN printf '%s\n' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-app \
     && chmod +x /usr/local/bin/start-app
+    COPY isrgrootx1.pem /usr/local/share/ca-certificates/tidb-ca.crt
+    RUN update-ca-certificates
 
 EXPOSE 10000
 
