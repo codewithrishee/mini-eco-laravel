@@ -34,6 +34,7 @@ RUN printf '%s\n' \
     'printf "<VirtualHost *:%s>\nDocumentRoot /var/www/html/public\n<Directory /var/www/html/public>\nAllowOverride All\nRequire all granted\n</Directory>\n</VirtualHost>\n" "$PORT" > /etc/apache2/sites-available/000-default.conf' \
     'mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache' \
     'chown -R www-data:www-data storage bootstrap/cache' \
+    'php artisan migrate --force' \
     'exec apache2-foreground' \
     > /usr/local/bin/start-app \
     && chmod +x /usr/local/bin/start-app
