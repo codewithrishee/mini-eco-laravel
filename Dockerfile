@@ -30,7 +30,6 @@ RUN mkdir -p database storage/framework/cache/data \
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
     && npm ci \
     && npm run build \
-    && composer run-script post-autoload-dump --no-dev --no-interaction \
     && chown -R www-data:www-data storage bootstrap/cache database
 
 # TiDB TLS certificate
