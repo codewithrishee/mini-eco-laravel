@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,12 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Force HTTPS URLs in production
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
+        // Load categories safely
         try {
             if (Schema::hasTable('categories')) {
                 View::share(
