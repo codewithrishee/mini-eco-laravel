@@ -48,16 +48,21 @@ class HeroSliderController extends Controller
         'status' => 'required|boolean',
     ]);
 
-    $imageName = null;
+   $imageName = null;
 
-    if ($request->hasFile('image')) {
+if ($request->hasFile('image')) {
+    $image = $request->file('image');
 
-        $image = $request->file('image');
+    $uploadPath = public_path('uploads/hero-sliders');
 
-        $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-        $image->move(public_path('uploads/hero-sliders'), $imageName);
+    if (!is_dir($uploadPath)) {
+        mkdir($uploadPath, 0755, true);
     }
+
+    $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+    $image->move($uploadPath, $imageName);
+}
 
     HeroSlider::create([
 
