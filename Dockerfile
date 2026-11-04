@@ -22,7 +22,9 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
     && npm ci \
     && npm run build \
-    && chown -R www-data:www-data storage bootstrap/cache database
+    && mkdir -p public/uploads/hero-sliders \
+    && chown -R www-data:www-data storage bootstrap/cache database public/uploads \
+    && chmod -R 775 public/uploads storage bootstrap/cache
 
 COPY isrgrootx1.pem /usr/local/share/ca-certificates/tidb-ca.crt
 
