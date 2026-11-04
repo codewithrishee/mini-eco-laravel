@@ -1,13 +1,26 @@
 @extends('layouts.app')
 @section('title', 'Home | RvStore')
 @section('content')
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
 
     <section class="hero-slider owl-carousel owl-theme">
         @foreach($heroSliders as $slider)
-            <div class="hero-slide" style="background-image: url('{{ asset('uploads/hero-sliders/' . $slider->image) }}');">
+            <div class="hero-slide" style="background-image: url('{{ $imageUrl($slider->image, 'hero-sliders') }}');">
                 <div class="container">
                     <div class="hero-content col-lg-7">
                         <span class="badge">
@@ -61,7 +74,7 @@
 
                             <div class="category-card h-100">
 
-                                <img src="{{ asset('uploads/categories/' . $category->image) }}" alt="{{ $category->name }}">
+                                <img src="{{ $imageUrl($category->image, 'categories') }}" alt="{{ $category->name }}">
 
                                 <div class="category-name">
                                     {{ $category->name }}
@@ -125,7 +138,7 @@
 
                                     @if($productImage)
 
-                                        <img src="{{ asset('uploads/products/' . $productImage->image) }}"
+                                        <img src="{{ $imageUrl($productImage->image, 'products') }}"
                                             alt="{{ $product->name }}">
 
                                     @else
@@ -303,7 +316,7 @@
 
                                     @if($productImage)
 
-                                        <img src="{{ asset('uploads/products/' . $productImage->image) }}"
+                                        <img src="{{ $imageUrl($productImage->image, 'products') }}"
                                             alt="{{ $product->name }}">
 
                                     @endif
@@ -494,7 +507,7 @@
 
                                     @if($productImage)
 
-                                        <img src="{{ asset('uploads/products/' . $productImage->image) }}"
+                                        <img src="{{ $imageUrl($productImage->image, 'products') }}"
                                             alt="{{ $product->name }}">
 
                                     @endif
@@ -629,7 +642,7 @@
 
                                     @if($productImage)
 
-                                        <img src="{{ asset('uploads/products/' . $productImage->image) }}"
+                                        <img src="{{ $imageUrl($productImage->image, 'products') }}"
                                             alt="{{ $product->name }}">
 
                                     @endif
@@ -749,7 +762,7 @@
 
                             @if($testimonial->image)
 
-                                <img src="{{ asset('uploads/testimonials/' . $testimonial->image) }}" alt="{{ $testimonial->name }}"
+                                <img src="{{ $imageUrl($testimonial->image, 'testimonials') }}" alt="{{ $testimonial->name }}"
                                     class="rounded-circle mx-auto mb-3" width="80" height="80" style="object-fit:cover;">
 
                             @else
@@ -818,7 +831,7 @@
 
                     <div class="item text-center" style="border-radius: 10px; overflow: hidden;">
 
-                        <img src="{{ asset('uploads/brands/' . $brand->logo) }}" alt="{{ $brand->name }}" class="img-fluid"
+                        <img src="{{ $imageUrl($brand->logo, 'brands') }}" alt="{{ $brand->name }}" class="img-fluid"
                             style="
                                     filter: grayscale(100%);
                                     opacity: 0.6;
@@ -870,7 +883,7 @@
 
                             <div class="insta-item">
 
-                                <img src="{{ asset('uploads/instagram/' . $gallery->image) }}" alt="Instagram">
+                                <img src="{{ $imageUrl($gallery->image, 'instagram') }}" alt="Instagram">
 
                                 <div class="insta-overlay">
                                     <i class="fab fa-instagram"></i>
