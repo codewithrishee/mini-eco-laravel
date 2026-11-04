@@ -482,24 +482,44 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+            // ================= Attributes =================
+            // Single consolidated block (previously duplicated).
+            // Dashboard: /admin/attributes
+            // Modules:   /admin/attributes/{sizes|colors|materials|tags}
             Route::get('/attributes', [AttributeController::class, 'dashboard'])
                 ->name('attributes.dashboard');
 
             Route::prefix('attributes')->name('attributes.')->group(function () {
 
-                Route::get('/{type}', [AttributeController::class, 'index'])->name('index');
+                Route::get('/{type}', [AttributeController::class, 'index'])
+                    ->whereIn('type', ['sizes', 'colors', 'materials', 'tags'])
+                    ->name('index');
 
-                Route::get('/{type}/create', [AttributeController::class, 'create'])->name('create');
+                Route::get('/{type}/create', [AttributeController::class, 'create'])
+                    ->whereIn('type', ['sizes', 'colors', 'materials', 'tags'])
+                    ->name('create');
 
-                Route::post('/{type}', [AttributeController::class, 'store'])->name('store');
+                Route::post('/{type}', [AttributeController::class, 'store'])
+                    ->whereIn('type', ['sizes', 'colors', 'materials', 'tags'])
+                    ->name('store');
 
-                Route::get('/{type}/{id}/edit', [AttributeController::class, 'edit'])->name('edit');
+                Route::get('/{type}/{id}/edit', [AttributeController::class, 'edit'])
+                    ->whereIn('type', ['sizes', 'colors', 'materials', 'tags'])
+                    ->whereNumber('id')
+                    ->name('edit');
 
-                Route::put('/{type}/{id}', [AttributeController::class, 'update'])->name('update');
+                Route::put('/{type}/{id}', [AttributeController::class, 'update'])
+                    ->whereIn('type', ['sizes', 'colors', 'materials', 'tags'])
+                    ->whereNumber('id')
+                    ->name('update');
 
-                Route::delete('/{type}/{id}', [AttributeController::class, 'destroy'])->name('destroy');
+                Route::delete('/{type}/{id}', [AttributeController::class, 'destroy'])
+                    ->whereIn('type', ['sizes', 'colors', 'materials', 'tags'])
+                    ->whereNumber('id')
+                    ->name('destroy');
 
             });
+            // ================= /Attributes =================
         });
 });
 
@@ -527,4 +547,3 @@ Route::get('/test-mail/{id}', function ($id) {
 });
 
 require __DIR__ . '/auth.php';
-

@@ -22,16 +22,18 @@ class AttributeController extends Controller
         };
     }
 
+    // Attributes Dashboard
     public function dashboard()
-{
-    return view('admin.attributes.dashboard', [
-        'colors' => Color::count(),
-        'sizes' => Size::count(),
-        'materials' => Material::count(),
-        'tags' => Tag::count(),
-    ]);
-}
+    {
+        return view('admin.attributes.dashboard', [
+            'colors' => Color::count(),
+            'sizes' => Size::count(),
+            'materials' => Material::count(),
+            'tags' => Tag::count(),
+        ]);
+    }
 
+    // Attribute Listing
     public function index($type)
     {
         $model = $this->getModel($type);
@@ -40,32 +42,42 @@ class AttributeController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.attributes.index', compact('items', 'type'));
+        return view("admin.attributes.{$type}.index", compact('items'));
     }
 
+    // Create Attribute
     public function create($type)
     {
-        return view('admin.attributes.form', compact('type'));
+        $this->getModel($type);
+
+        return view("admin.attributes.{$type}.form");
     }
 
+    // Store Attribute
     public function store(Request $request, $type)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'status' => 'required',
-            'display_order' => 'nullable|integer',
-        ]);
-
         $model = $this->getModel($type);
 
-        $data = $request->only([
-            'name',
-            'status',
-            'display_order',
-        ]);
+        $rules = [
+            'name' => 'required|string|max:255',
+            'status' => 'required|boolean',
+            'display_order' => 'nullable|integer|min:0',
+        ];
 
-        if ($type == 'colors') {
-            $data['code'] = $request->code;
+        if ($type === 'colors') {
+            $rules['code'] = ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'];
+        }
+
+        $validated = $request->validate($rules);
+
+        $data = [
+            'name' => $validated['name'],
+            'status' => $validated['status'],
+            'display_order' => $validated['display_order'] ?? 0,
+        ];
+
+        if ($type === 'colors') {
+            $data['code'] = $validated['code'];
         }
 
         $model::create($data);
@@ -75,35 +87,43 @@ class AttributeController extends Controller
             ->with('success', ucfirst($type) . ' created successfully.');
     }
 
+    // Edit Attribute
     public function edit($type, $id)
     {
         $model = $this->getModel($type);
 
         $item = $model::findOrFail($id);
 
-        return view('admin.attributes.form', compact('item', 'type'));
+        return view("admin.attributes.{$type}.form", compact('item'));
     }
 
+    // Update Attribute
     public function update(Request $request, $type, $id)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'status' => 'required',
-            'display_order' => 'nullable|integer',
-        ]);
-
         $model = $this->getModel($type);
 
         $item = $model::findOrFail($id);
 
-        $data = $request->only([
-            'name',
-            'status',
-            'display_order',
-        ]);
+        $rules = [
+            'name' => 'required|string|max:255',
+            'status' => 'required|boolean',
+            'display_order' => 'nullable|integer|min:0',
+        ];
 
-        if ($type == 'colors') {
-            $data['code'] = $request->code;
+        if ($type === 'colors') {
+            $rules['code'] = ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'];
+        }
+
+        $validated = $request->validate($rules);
+
+        $data = [
+            'name' => $validated['name'],
+            'status' => $validated['status'],
+            'display_order' => $validated['display_order'] ?? 0,
+        ];
+
+        if ($type === 'colors') {
+            $data['code'] = $validated['code'];
         }
 
         $item->update($data);
@@ -113,6 +133,7 @@ class AttributeController extends Controller
             ->with('success', ucfirst($type) . ' updated successfully.');
     }
 
+    // Delete Attribute
     public function destroy($type, $id)
     {
         $model = $this->getModel($type);
