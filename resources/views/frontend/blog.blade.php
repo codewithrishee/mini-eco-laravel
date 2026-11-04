@@ -1,6 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Blogs | RvStore')
 @section('content')
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 
  <link rel="stylesheet" href="{{ asset('assets/css/blog.css') }}">
 
@@ -36,7 +49,7 @@
             <a href="{{ route('blog.details', $featuredBlog->slug) }}" class="text-decoration-none text-dark d-block">
                 <div class="featured-card card">
                     @if($featuredBlog->image)
-                        <img src="{{ asset('uploads/blogs/' . $featuredBlog->image) }}" class="card-img-top" alt="{{ $featuredBlog->title }}">
+                        <img src="{{ $imageUrl($featuredBlog->image, 'blogs') }}" class="card-img-top" alt="{{ $featuredBlog->title }}">
                     @endif
 
                     <div class="card-body">
@@ -97,7 +110,7 @@
                 <a href="{{ route('blog.details', $blog->slug) }}" class="text-decoration-none text-dark d-block h-100">
                     <div class="blog-card card h-100">
                         @if($blog->image)
-                            <img src="{{ asset('uploads/blogs/' . $blog->image) }}" class="card-img-top" alt="{{ $blog->title }}">
+                            <img src="{{ $imageUrl($blog->image, 'blogs') }}" class="card-img-top" alt="{{ $blog->title }}">
                         @endif
 
                         <div class="card-body">

@@ -1,6 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Product-Details | RvStore')
 @section('content')
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/product-details.css') }}">
@@ -52,7 +65,7 @@
                         @if($mainImage)
                             <img
                                 id="mainProductImage"
-                                src="{{ asset('uploads/products/' . $mainImage->image) }}"
+                                src="{{ $imageUrl($mainImage->image, 'products') }}"
                                 alt="{{ $product->name }}"
                                 class="img-fluid w-100"
                             >
@@ -66,7 +79,7 @@
                             @foreach($product->images as $image)
                                 <div class="thumbnail-item @if($loop->first) active @endif">
                                     <img
-                                        src="{{ asset('uploads/products/' . $image->image) }}"
+                                        src="{{ $imageUrl($image->image, 'products') }}"
                                         alt="{{ $product->name }}"
                                         class="product-thumbnail"
                                         onclick="changeProductImage(this.src)"
@@ -362,7 +375,16 @@
                     <div class="col-lg-3 col-md-6 col-6">
                         <div class="related-product-card h-100 border-0 shadow-sm rounded-4 bg-white overflow-hidden">
                             <div class="position-relative">
-                                <img src="{{ asset('uploads/products/' . ($related->images->first()->image ?? '')) }}" alt="{{ $related->name }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;">
+                                @php
+    $relatedImage = $related->images->first();
+@endphp
+
+@if($relatedImage)
+    <img src="{{ $imageUrl($relatedImage->image, 'products') }}"
+        alt="{{ $related->name }}"
+        class="img-fluid w-100"
+        style="height: 200px; object-fit: cover;">
+@endif
                                 @if($related->sale_price)
                                     <span class="badge bg-danger position-absolute top-0 end-0 m-2">Sale</span>
                                 @endif
@@ -408,7 +430,9 @@
                     <div class="product-preview d-flex align-items-center gap-3 p-3 bg-light rounded-3 mb-4">
                         @php $previewImage = $product->images->first(); @endphp
                         @if($previewImage)
-                            <img src="{{ asset('uploads/products/' . $previewImage->image) }}" alt="{{ $product->name }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                            <img src="{{ $imageUrl($previewImage->image, 'products') }}"
+    alt="{{ $product->name }}"
+    style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
                         @else
                             <div style="width: 60px; height: 60px; background: #e9ecef; border-radius: 8px;"></div>
                         @endif

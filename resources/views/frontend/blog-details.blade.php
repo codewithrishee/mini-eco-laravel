@@ -1,6 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Blog-Details | RvStore')
 @section('content')
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 
 <link rel="stylesheet" href="{{ asset('assets/css/blog-details.css') }}">
 
@@ -81,7 +94,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-10 col-xl-9">
                         <div class="featured-image-wrapper">
-                            <img src="{{ asset('uploads/blogs/'.$blog->image) }}"
+                            <img src="{{ $imageUrl($blog->image, 'blogs') }}"
                                  alt="{{ $blog->title }}"
                                  class="featured-image img-fluid w-100">
                         </div>
@@ -190,7 +203,7 @@
 
                                 <div class="related-card-image">
                                     @if($relatedBlog->image)
-                                        <img src="{{ asset('uploads/blogs/'.$relatedBlog->image) }}"
+                                        <img src="{{ $imageUrl($relatedBlog->image, 'blogs') }}"
                                              alt="{{ $relatedBlog->title }}"
                                              class="card-img">
                                     @else

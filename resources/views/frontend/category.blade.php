@@ -2,6 +2,19 @@
 @section('title', 'Category | RvStore')
 @section('content')
 
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/shop.css') }}">
 
@@ -111,7 +124,7 @@
                                 @if($productImage)
 
                                     <img
-                                        src="{{ asset('uploads/products/' . $productImage->image) }}"
+                                        src="{{ $imageUrl($productImage->image, 'products') }}"
                                         alt="{{ $product->name }}"
                                         class="img-fluid"
                                     >

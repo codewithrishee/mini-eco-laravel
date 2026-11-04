@@ -1,6 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Contact Us | RvStore')
 @section('content')
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 
 
     <link rel="stylesheet" href="{{ asset('assets/css/contact.css') }}">
@@ -355,7 +368,7 @@
                     {{-- STORE IMAGE --}}
                     @if($storeInformation?->image)
 
-                        <img src="{{ asset('uploads/store/' . $storeInformation->image) }}"
+                        <img src="{{ $imageUrl($storeInformation->image, 'store') }}"
                              alt="{{ $storeInformation->heading ?? 'Customer Assistance' }}"
                              class="img-fluid">
 

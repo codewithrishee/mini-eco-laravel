@@ -1,6 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Shop | RvStore')
 @section('content')
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/shop.css') }}">
@@ -266,8 +279,8 @@
 
                                                             @if($productImage)
 
-                                                                <img src="{{ asset('uploads/products/' . $productImage->image) }}"
-                                                                    alt="{{ $product->name }}" class="img-fluid">
+                                                                <img src="{{ $imageUrl($productImage->image, 'products') }}"
+    alt="{{ $product->name }}" class="img-fluid">
 
                                                             @endif
 
@@ -448,7 +461,7 @@
                             @if($recentImage)
 
                                 <img
-                                    src="{{ asset('uploads/products/' . $recentImage->image) }}"
+                                    src="{{ $imageUrl($recentImage->image, 'products') }}"
                                     alt="{{ $product->name }}"
                                     class="img-fluid"
                                 >

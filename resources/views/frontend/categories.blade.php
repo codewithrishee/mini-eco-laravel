@@ -1,6 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Category | RvStore')
 @section('content')
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/shop.css') }}">
@@ -367,7 +380,7 @@
                                 @if($category->image)
 
                                     <img
-                                        src="{{ asset('uploads/categories/' . $category->image) }}"
+                                        src="{{ $imageUrl($category->image, 'categories') }}"
                                         alt="{{ $category->name }}"
                                         loading="lazy"
                                     >

@@ -1,6 +1,19 @@
 @extends('layouts.app')
 @section('title', 'About US | RvStore')
 @section('content')
+@php
+    $imageUrl = function ($image, $folder) {
+        if (!$image) {
+            return '';
+        }
+
+        if (\Illuminate\Support\Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return asset('uploads/' . $folder . '/' . $image);
+    };
+@endphp
 
     <link rel="stylesheet" href="{{ asset('assets/css/about.css') }}">
 
@@ -31,7 +44,7 @@
                 <div class="story-image-wrapper">
                     <div class="story-image-main">
                         @if($ourStory && $ourStory->main_image)
-                            <img src="{{ asset('uploads/about/' . $ourStory->main_image) }}" alt="{{ $ourStory->title }}" class="img-fluid rounded-4">
+                            <img src="{{ $imageUrl($ourStory->main_image, 'about') }}" alt="{{ $ourStory->title }}" class="img-fluid rounded-4">
                         @else
                             <img src="{{ asset('assets/images/story-placeholder.jpg') }}" alt="Our Story" class="img-fluid rounded-4">
                         @endif
@@ -39,7 +52,7 @@
 
                     @if($ourStory && $ourStory->floating_image)
                         <div class="story-image-floating">
-                            <img src="{{ asset('uploads/about/' . $ourStory->floating_image) }}" alt="Rv-Store" class="img-fluid rounded-circle">
+                            <img src="{{ $imageUrl($ourStory->floating_image, 'about') }}" alt="Rv-Store" class="img-fluid rounded-circle">
                         </div>
                     @endif
                 </div>
