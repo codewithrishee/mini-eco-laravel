@@ -16,12 +16,11 @@
         </div>
 
         <div class="d-flex flex-wrap gap-2">
-            <!-- Back to Attributes -->
-            <a href="{{ url()->previous() }}"
-               class="btn btn-outline-secondary rounded-pill px-4">
-                <i class="fas fa-arrow-left me-1"></i>
-                Back to Attributes
-            </a>
+           <a href="{{ route('admin.attributes.index') }}"
+   class="btn btn-outline-secondary rounded-pill px-4">
+    <i class="fas fa-arrow-left me-1"></i>
+    Back to Attributes
+</a>
 
             <!-- Add Attribute Value -->
             <a href="{{ route('admin.attributes.create', $type) }}"
