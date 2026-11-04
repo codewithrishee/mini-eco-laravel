@@ -12,6 +12,8 @@ class OurStory extends Model
         'highlight_text',
         'description',
         'main_image',
+        'main_image_public_id',
         'floating_image',
+        'floating_image_public_id',
     ];
 }

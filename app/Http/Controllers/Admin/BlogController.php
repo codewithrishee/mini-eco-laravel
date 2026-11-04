@@ -6,24 +6,52 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class BlogController extends Controller
 {
     public function index()
     {
         $blogs = Blog::latest()->get();
+
         return view('admin.blogs.index', compact('blogs'));
     }
 
     public function create()
     {
         $blog = new Blog();
+
         return view('admin.blogs.form', compact('blog'));
+    }
+
+    private function uploadBlogImage($file): array
+    {
+        $result = Cloudinary::uploadApi()->upload(
+            $file->getRealPath(),
+            [
+                'folder' => 'rv-store/blogs',
+                'resource_type' => 'image',
+            ]
+        );
+
+        return [
+            'url' => $result['secure_url'],
+            'public_id' => $result['public_id'],
+        ];
+    }
+
+    private function deleteCloudinaryImage(?string $publicId): void
+    {
+        if ($publicId) {
+            Cloudinary::uploadApi()->destroy($publicId, [
+                'resource_type' => 'image',
+            ]);
+        }
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|max:255',
             'author' => 'nullable|max:255',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -32,22 +60,17 @@ class BlogController extends Controller
             'read_time' => 'required|integer|min:1',
         ]);
 
-        $image = time().'.'.$request->image->extension();
-
-        $request->image->move(
-            public_path('uploads/blogs'),
-            $image
-        );
+        $uploadedImage = $this->uploadBlogImage($request->file('image'));
 
         Blog::create([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title),
-
-            'author' => $request->author,
-            'image' => $image,
-            'short_description' => $request->short_description,
-            'content' => $request->content,
-            'read_time' => $request->read_time,
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'author' => $validated['author'] ?? null,
+            'image' => $uploadedImage['url'],
+            'image_public_id' => $uploadedImage['public_id'],
+            'short_description' => $validated['short_description'],
+            'content' => $validated['content'],
+            'read_time' => $validated['read_time'],
             'is_featured' => $request->has('is_featured') ? 1 : 0,
             'status' => $request->has('status') ? 1 : 0,
         ]);
@@ -64,9 +87,8 @@ class BlogController extends Controller
 
     public function update(Request $request, Blog $blog)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|max:255',
-            
             'author' => 'nullable|max:255',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'short_description' => 'required',
@@ -74,36 +96,34 @@ class BlogController extends Controller
             'read_time' => 'required|integer|min:1',
         ]);
 
-        $image = $blog->image;
+        $oldPublicId = $blog->image_public_id;
+        $uploadedImage = null;
 
-        if ($request->hasFile('image')) {
-            if (
-                $blog->image &&
-                file_exists(public_path('uploads/blogs/'.$blog->image))
-            ) {
-                unlink(public_path('uploads/blogs/'.$blog->image));
-            }
-
-            $image = time().'.'.$request->image->extension();
-
-            $request->image->move(
-                public_path('uploads/blogs'),
-                $image
-            );
-        }
-
-        $blog->update([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title),
-            
-            'author' => $request->author,
-            'image' => $image,
-            'short_description' => $request->short_description,
-            'content' => $request->content,
-            'read_time' => $request->read_time,
+        $data = [
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'author' => $validated['author'] ?? null,
+            'short_description' => $validated['short_description'],
+            'content' => $validated['content'],
+            'read_time' => $validated['read_time'],
             'is_featured' => $request->has('is_featured') ? 1 : 0,
             'status' => $request->has('status') ? 1 : 0,
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $uploadedImage = $this->uploadBlogImage(
+                $request->file('image')
+            );
+
+            $data['image'] = $uploadedImage['url'];
+            $data['image_public_id'] = $uploadedImage['public_id'];
+        }
+
+        $blog->update($data);
+
+        if ($uploadedImage && $oldPublicId) {
+            $this->deleteCloudinaryImage($oldPublicId);
+        }
 
         return redirect()
             ->route('admin.blogs.index')
@@ -112,14 +132,13 @@ class BlogController extends Controller
 
     public function destroy(Blog $blog)
     {
-        if (
-            $blog->image &&
-            file_exists(public_path('uploads/blogs/'.$blog->image))
-        ) {
-            unlink(public_path('uploads/blogs/'.$blog->image));
-        }
+        $publicId = $blog->image_public_id;
 
         $blog->delete();
+
+        if ($publicId) {
+            $this->deleteCloudinaryImage($publicId);
+        }
 
         return redirect()
             ->route('admin.blogs.index')

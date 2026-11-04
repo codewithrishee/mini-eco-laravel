@@ -1,7 +1,9 @@
+
 @extends('layouts.admin')
 
 @section('content')
 <div class="container-fluid px-4">
+
     <!-- Page Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
@@ -10,6 +12,7 @@
             </h4>
             <p class="text-muted small mb-0">Manage Rv-Store blog articles.</p>
         </div>
+
         <a href="{{ route('admin.blogs.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="fas fa-plus me-1"></i> Add Blog
         </a>
@@ -41,29 +44,35 @@
                             <th scope="col" class="py-3 pe-4 text-end">Action</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($blogs as $blog)
                             <tr>
                                 <td class="ps-4 fw-semibold">{{ $loop->iteration }}</td>
+
                                 <td>
                                     @if($blog->image)
-                                        <img src="{{ asset('uploads/blogs/'.$blog->image) }}"
-                                             alt="{{ $blog->title }}"
-                                             width="70"
-                                             height="55"
-                                             class="rounded-2 border object-fit-cover"
-                                             style="object-fit:cover;">
+                                        <img
+                                            src="{{ \Illuminate\Support\Str::startsWith($blog->image, ['http://', 'https://']) ? $blog->image : asset('uploads/blogs/' . $blog->image) }}"
+                                            alt="{{ $blog->title }}"
+                                            width="70"
+                                            height="55"
+                                            class="rounded-2 border object-fit-cover">
                                     @else
                                         <span class="text-muted small">No Image</span>
                                     @endif
                                 </td>
+
                                 <td class="fw-medium">{{ $blog->title }}</td>
+
                                 <td>
                                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
                                         {{ $blog->category }}
                                     </span>
                                 </td>
+
                                 <td>{{ $blog->author ?? '-' }}</td>
+
                                 <td>
                                     @if($blog->is_featured)
                                         <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">
@@ -75,6 +84,7 @@
                                         </span>
                                     @endif
                                 </td>
+
                                 <td>
                                     @if($blog->status)
                                         <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
@@ -86,26 +96,33 @@
                                         </span>
                                     @endif
                                 </td>
+
                                 <td>{{ $blog->created_at->format('d M Y') }}</td>
+
                                 <td class="pe-4 text-end">
                                     <div class="d-flex justify-content-end gap-2">
+
                                         <a href="{{ route('admin.blogs.edit', $blog->id) }}"
                                            class="btn btn-outline-primary btn-sm rounded-pill px-3">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
+
                                         <form action="{{ route('admin.blogs.destroy', $blog->id) }}"
                                               method="POST"
                                               class="d-inline"
                                               onsubmit="return confirm('Delete this blog?')">
                                             @csrf
                                             @method('DELETE')
+
                                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
                                                 <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </form>
+
                                     </div>
                                 </td>
                             </tr>
+
                         @empty
                             <tr>
                                 <td colspan="9" class="text-center py-5">
@@ -120,6 +137,7 @@
             </div>
         </div>
     </div>
+
 </div>
 @endsection
 
@@ -128,9 +146,11 @@
     .rounded-4 {
         border-radius: 1rem !important;
     }
+
     .bg-opacity-10 {
         --bs-bg-opacity: 0.1;
     }
+
     .table th {
         font-weight: 600;
         font-size: 0.8rem;
@@ -139,37 +159,43 @@
         color: #6c757d;
         border-bottom: 2px solid #e9ecef;
     }
+
     .table td {
         vertical-align: middle;
         padding: 0.75rem 0.5rem;
     }
+
     .table tbody tr {
         transition: background 0.15s ease;
     }
+
     .table tbody tr:hover {
         background-color: #f8f9fc;
     }
-    .btn-outline-primary {
-        border-width: 1.5px;
-    }
+
+    .btn-outline-primary,
     .btn-outline-danger {
         border-width: 1.5px;
     }
+
     .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         transition: all 0.3s ease;
     }
+
     .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
+
     .alert-success {
         background-color: #e8f5e9;
         border-left: 4px solid #28a745;
         color: #1e7e34;
     }
+
     .object-fit-cover {
         object-fit: cover;
     }

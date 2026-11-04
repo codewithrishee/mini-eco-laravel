@@ -331,13 +331,12 @@
                                 <div class="d-flex flex-wrap gap-2">
                                     @foreach($product->images as $image)
                                         <div class="position-relative">
-                                            <img src="{{ asset('storage/' . $image->path) }}"
+                                            <img src="{{ Str::startsWith($image->image, 'http')
+    ? $image->image
+    : asset('uploads/products/' . $image->image) }}"
                                                  alt="Product image"
                                                  width="70" height="70"
                                                  class="rounded-3 border object-fit-cover">
-                                            @if($image->is_primary)
-                                                <span class="badge bg-primary position-absolute top-0 start-0 m-1">Primary</span>
-                                            @endif
                                         </div>
                                     @endforeach
                                 </div>

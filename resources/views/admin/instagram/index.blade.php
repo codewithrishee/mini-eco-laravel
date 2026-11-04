@@ -1,7 +1,9 @@
+
 @extends('layouts.admin')
 
 @section('content')
 <div class="container-fluid px-4">
+
     <!-- Page Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
@@ -10,6 +12,7 @@
             </h4>
             <p class="text-muted small mb-0">Manage homepage Instagram gallery</p>
         </div>
+
         <a href="{{ route('admin.instagram.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="bi bi-plus-circle me-1"></i> Add Image
         </a>
@@ -19,6 +22,14 @@
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 shadow-sm" role="alert">
             <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- Error Alert -->
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -38,22 +49,32 @@
                             <th scope="col" class="py-3 pe-4 text-end">Action</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($galleries as $gallery)
                             <tr>
                                 <td class="ps-4 fw-semibold">{{ $gallery->id }}</td>
+
                                 <td>
-                                    <img src="{{ asset('uploads/instagram/' . $gallery->image) }}"
-                                         alt="Instagram"
-                                         width="70"
-                                         height="70"
-                                         class="rounded-2 border"
-                                         style="object-fit: cover;">
+                                    @if($gallery->image)
+                                        <img
+                                            src="{{ \Illuminate\Support\Str::startsWith($gallery->image, ['http://', 'https://']) ? $gallery->image : asset('uploads/instagram/' . $gallery->image) }}"
+                                            alt="Instagram"
+                                            width="70"
+                                            height="70"
+                                            class="rounded-2 border"
+                                            style="object-fit: cover;"
+                                        >
+                                    @else
+                                        <span class="text-muted small">No Image</span>
+                                    @endif
                                 </td>
+
                                 <td>
                                     @if($gallery->link)
                                         <a href="{{ $gallery->link }}"
                                            target="_blank"
+                                           rel="noopener noreferrer"
                                            class="text-decoration-none fw-medium">
                                             <i class="bi bi-box-arrow-up-right me-1"></i>View Post
                                         </a>
@@ -61,11 +82,13 @@
                                         <span class="text-muted small">No Link</span>
                                     @endif
                                 </td>
+
                                 <td>
                                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
                                         {{ $gallery->display_order }}
                                     </span>
                                 </td>
+
                                 <td>
                                     @if($gallery->status)
                                         <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
@@ -77,18 +100,21 @@
                                         </span>
                                     @endif
                                 </td>
+
                                 <td class="pe-4 text-end">
                                     <div class="d-flex justify-content-end gap-2">
                                         <a href="{{ route('admin.instagram.edit', $gallery->id) }}"
                                            class="btn btn-outline-warning btn-sm rounded-pill px-3">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </a>
+
                                         <form action="{{ route('admin.instagram.destroy', $gallery->id) }}"
                                               method="POST"
                                               class="d-inline"
                                               onsubmit="return confirm('Delete this image?');">
                                             @csrf
                                             @method('DELETE')
+
                                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
                                                 <i class="bi bi-trash3"></i> Delete
                                             </button>
@@ -110,6 +136,7 @@
             </div>
         </div>
     </div>
+
 </div>
 @endsection
 
@@ -118,9 +145,11 @@
     .rounded-4 {
         border-radius: 1rem !important;
     }
+
     .bg-opacity-10 {
         --bs-bg-opacity: 0.1;
     }
+
     .table th {
         font-weight: 600;
         font-size: 0.8rem;
@@ -129,33 +158,38 @@
         color: #6c757d;
         border-bottom: 2px solid #e9ecef;
     }
+
     .table td {
         vertical-align: middle;
         padding: 0.75rem 0.5rem;
     }
+
     .table tbody tr {
         transition: background 0.15s ease;
     }
+
     .table tbody tr:hover {
         background-color: #f8f9fc;
     }
-    .btn-outline-warning {
-        border-width: 1.5px;
-    }
+
+    .btn-outline-warning,
     .btn-outline-danger {
         border-width: 1.5px;
     }
+
     .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         color: #fff;
         transition: all 0.3s ease;
     }
+
     .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
+
     .alert-success {
         background-color: #e8f5e9;
         border-left: 4px solid #28a745;

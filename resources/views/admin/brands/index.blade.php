@@ -1,7 +1,9 @@
+
 @extends('layouts.admin')
 
 @section('content')
 <div class="container-fluid px-4">
+
     <!-- Page Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
@@ -10,6 +12,7 @@
             </h4>
             <p class="text-muted small mb-0">Manage your store brands</p>
         </div>
+
         <a href="{{ route('admin.brands.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="bi bi-plus-circle me-1"></i> Add Brand
         </a>
@@ -38,28 +41,34 @@
                             <th scope="col" class="py-3 pe-4 text-end">Action</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($brands as $brand)
                             <tr>
                                 <td class="ps-4 fw-semibold">{{ $brand->id }}</td>
+
                                 <td>
                                     @if($brand->logo)
-                                        <img src="{{ asset('uploads/brands/' . $brand->logo) }}"
-                                             width="80"
-                                             height="50"
-                                             style="object-fit: contain;"
-                                             class="border rounded-2"
-                                             alt="{{ $brand->name }}">
+                                        <img
+                                            src="{{ \Illuminate\Support\Str::startsWith($brand->logo, ['http://', 'https://']) ? $brand->logo : asset('uploads/brands/' . $brand->logo) }}"
+                                            width="80"
+                                            height="50"
+                                            style="object-fit: contain;"
+                                            class="border rounded-2"
+                                            alt="{{ $brand->name }}">
                                     @else
                                         <span class="text-muted small">No Logo</span>
                                     @endif
                                 </td>
+
                                 <td class="fw-medium">{{ $brand->name }}</td>
+
                                 <td>
                                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
                                         {{ $brand->display_order }}
                                     </span>
                                 </td>
+
                                 <td>
                                     @if($brand->status)
                                         <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
@@ -71,25 +80,31 @@
                                         </span>
                                     @endif
                                 </td>
+
                                 <td class="pe-4 text-end">
                                     <div class="d-flex justify-content-end gap-2">
+
                                         <a href="{{ route('admin.brands.edit', $brand->id) }}"
                                            class="btn btn-outline-warning btn-sm rounded-pill px-3">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </a>
+
                                         <form action="{{ route('admin.brands.destroy', $brand->id) }}"
                                               method="POST"
                                               class="d-inline"
                                               onsubmit="return confirm('Delete this brand?');">
                                             @csrf
                                             @method('DELETE')
+
                                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
                                                 <i class="bi bi-trash3"></i> Delete
                                             </button>
                                         </form>
+
                                     </div>
                                 </td>
                             </tr>
+
                         @empty
                             <tr>
                                 <td colspan="6" class="text-center py-5">
@@ -104,6 +119,7 @@
             </div>
         </div>
     </div>
+
 </div>
 @endsection
 
@@ -112,9 +128,11 @@
     .rounded-4 {
         border-radius: 1rem !important;
     }
+
     .bg-opacity-10 {
         --bs-bg-opacity: 0.1;
     }
+
     .table th {
         font-weight: 600;
         font-size: 0.8rem;
@@ -123,33 +141,38 @@
         color: #6c757d;
         border-bottom: 2px solid #e9ecef;
     }
+
     .table td {
         vertical-align: middle;
         padding: 0.75rem 0.5rem;
     }
+
     .table tbody tr {
         transition: background 0.15s ease;
     }
+
     .table tbody tr:hover {
         background-color: #f8f9fc;
     }
-    .btn-outline-warning {
-        border-width: 1.5px;
-    }
+
+    .btn-outline-warning,
     .btn-outline-danger {
         border-width: 1.5px;
     }
+
     .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         color: #fff;
         transition: all 0.3s ease;
     }
+
     .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
+
     .alert-success {
         background-color: #e8f5e9;
         border-left: 4px solid #28a745;

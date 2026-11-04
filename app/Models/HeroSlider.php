@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HeroSlider extends Model
 {
-     protected $fillable = [
+    protected $fillable = [
         'badge',
         'title',
         'description',
@@ -15,6 +15,7 @@ class HeroSlider extends Model
         'button2_text',
         'button2_link',
         'image',
+        'image_public_id',
         'display_order',
         'status',
     ];

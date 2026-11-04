@@ -74,10 +74,10 @@
             ABOUT
         </div>
 
-        <a href="about" class="nav-link">
+        <!-- <a href="about" class="nav-link">
             <i class="bi bi-info-circle"></i>
             About
-        </a>
+        </a> -->
 
         <a href="our-story" class="nav-link">
             <i class="bi bi-book"></i>

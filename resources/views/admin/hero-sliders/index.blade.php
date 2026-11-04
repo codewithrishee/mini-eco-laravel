@@ -1,7 +1,9 @@
+
 @extends('layouts.admin')
 
 @section('content')
 <div class="container-fluid px-4">
+
     <!-- Page Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
@@ -10,14 +12,24 @@
             </h4>
             <p class="text-muted small mb-0">Manage your home page hero sliders.</p>
         </div>
+
         <a href="{{ route('admin.hero-sliders.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="bi bi-plus-circle me-1"></i> Add Slider
         </a>
     </div>
 
+    <!-- Success Alert -->
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 shadow-sm" role="alert">
             <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- Error Alert -->
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
@@ -37,22 +49,35 @@
                             <th scope="col" class="py-3 pe-4 text-end">Action</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($sliders as $slider)
                             <tr>
                                 <td class="ps-4 fw-semibold">{{ $loop->iteration }}</td>
+
                                 <td>
-                                    <img src="{{ asset('uploads/hero-sliders/' . $slider->image) }}"
-                                         width="80"
-                                         class="rounded-2 border"
-                                         alt="{{ $slider->title }}">
+                                    @if($slider->image)
+                                        <img
+                                            src="{{ \Illuminate\Support\Str::startsWith($slider->image, ['http://', 'https://']) ? $slider->image : asset('uploads/hero-sliders/' . $slider->image) }}"
+                                            width="100"
+                                            height="60"
+                                            style="object-fit: cover;"
+                                            class="rounded-2 border"
+                                            alt="{{ $slider->title }}"
+                                        >
+                                    @else
+                                        <span class="text-muted small">No Image</span>
+                                    @endif
                                 </td>
+
                                 <td class="fw-medium">{{ $slider->title }}</td>
+
                                 <td>
                                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
                                         {{ $slider->display_order }}
                                     </span>
                                 </td>
+
                                 <td>
                                     @if($slider->status)
                                         <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
@@ -64,22 +89,27 @@
                                         </span>
                                     @endif
                                 </td>
+
                                 <td class="pe-4 text-end">
                                     <div class="d-flex justify-content-end gap-2">
+
                                         <a href="{{ route('admin.hero-sliders.edit', $slider->id) }}"
                                            class="btn btn-outline-primary btn-sm rounded-pill px-3">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </a>
+
                                         <form action="{{ route('admin.hero-sliders.destroy', $slider->id) }}"
                                               method="POST"
                                               class="d-inline"
                                               onsubmit="return confirm('Are you sure you want to delete this slider?');">
                                             @csrf
                                             @method('DELETE')
+
                                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
                                                 <i class="bi bi-trash3"></i> Delete
                                             </button>
                                         </form>
+
                                     </div>
                                 </td>
                             </tr>
@@ -97,18 +127,20 @@
             </div>
         </div>
     </div>
+
 </div>
 @endsection
 
 @push('styles')
 <style>
-    /* Custom professional touches */
     .rounded-4 {
         border-radius: 1rem !important;
     }
+
     .bg-opacity-10 {
         --bs-bg-opacity: 0.1;
     }
+
     .table th {
         font-weight: 600;
         font-size: 0.8rem;
@@ -117,33 +149,38 @@
         color: #6c757d;
         border-bottom: 2px solid #e9ecef;
     }
+
     .table td {
         vertical-align: middle;
         padding: 0.75rem 0.5rem;
     }
+
     .table tbody tr {
         transition: background 0.15s ease;
     }
+
     .table tbody tr:hover {
         background-color: #f8f9fc;
     }
-    .btn-outline-primary {
-        border-width: 1.5px;
-    }
+
+    .btn-outline-primary,
     .btn-outline-danger {
         border-width: 1.5px;
     }
+
     .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         color: #fff;
         transition: all 0.3s ease;
     }
+
     .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
+
     .alert-success {
         background-color: #e8f5e9;
         border-left: 4px solid #28a745;

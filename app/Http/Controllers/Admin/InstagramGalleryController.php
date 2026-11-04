@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\InstagramGallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class InstagramGalleryController extends Controller
 {
@@ -21,6 +24,54 @@ class InstagramGalleryController extends Controller
         return view('admin.instagram.form');
     }
 
+    private function uploadInstagramImage($image): array
+    {
+        $result = Cloudinary::uploadApi()->upload(
+            $image->getRealPath(),
+            [
+                'folder' => 'rv-store/instagram',
+                'resource_type' => 'image',
+            ]
+        );
+
+        return [
+            'url' => $result['secure_url'],
+            'public_id' => $result['public_id'],
+        ];
+    }
+
+    private function deleteInstagramImage(?string $publicId): void
+    {
+        if (!$publicId) {
+            return;
+        }
+
+        try {
+            Cloudinary::uploadApi()->destroy($publicId);
+        } catch (\Throwable $e) {
+            Log::error('Instagram Cloudinary Delete Failed', [
+                'public_id' => $publicId,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function deleteLegacyImage(?string $image): void
+    {
+        if (
+            !$image ||
+            Str::startsWith($image, ['http://', 'https://'])
+        ) {
+            return;
+        }
+
+        $imagePath = public_path('uploads/instagram/' . $image);
+
+        if (File::exists($imagePath)) {
+            File::delete($imagePath);
+        }
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -29,37 +80,46 @@ class InstagramGalleryController extends Controller
             'display_order' => 'nullable|integer|min:0',
         ]);
 
-        $imageName = null;
+        $uploadedImage = null;
 
-        if ($request->hasFile('image')) {
-
-            $image = $request->file('image');
-
-            $imageName = time() . '_' . uniqid() . '.' .
-                $image->getClientOriginalExtension();
-
-            $image->move(
-                public_path('uploads/instagram'),
-                $imageName
+        try {
+            $uploadedImage = $this->uploadInstagramImage(
+                $request->file('image')
             );
+
+            InstagramGallery::create([
+                'image' => $uploadedImage['url'],
+                'image_public_id' => $uploadedImage['public_id'],
+                'link' => $request->link,
+                'status' => $request->has('status') ? 1 : 0,
+                'display_order' => $request->display_order ?? 0,
+            ]);
+
+            return redirect()
+                ->route('admin.instagram.index')
+                ->with('success', 'Instagram image added successfully.');
+
+        } catch (\Throwable $e) {
+            if ($uploadedImage) {
+                $this->deleteInstagramImage($uploadedImage['public_id']);
+            }
+
+            Log::error('Instagram Image Store Failed', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->with('error', 'Instagram image upload failed. Please try again.');
         }
-
-        InstagramGallery::create([
-            'image' => $imageName,
-            'link' => $request->link,
-            'status' => $request->has('status') ? 1 : 0,
-            'display_order' => $request->display_order ?? 0,
-        ]);
-
-        return redirect()
-            ->route('admin.instagram.index')
-            ->with('success', 'Instagram image added successfully.');
     }
 
     public function edit(InstagramGallery $instagram)
     {
         return view('admin.instagram.form', [
-            'gallery' => $instagram
+            'gallery' => $instagram,
         ]);
     }
 
@@ -71,55 +131,86 @@ class InstagramGalleryController extends Controller
             'display_order' => 'nullable|integer|min:0',
         ]);
 
-        $imageName = $instagram->image;
+        $uploadedImage = null;
 
-        if ($request->hasFile('image')) {
+        $oldImage = $instagram->image;
+        $oldPublicId = $instagram->image_public_id;
 
-            $oldImage = public_path(
-                'uploads/instagram/' . $instagram->image
-            );
+        try {
+            $imageUrl = $oldImage;
+            $imagePublicId = $oldPublicId;
 
-            if (File::exists($oldImage)) {
-                File::delete($oldImage);
+            if ($request->hasFile('image')) {
+                $uploadedImage = $this->uploadInstagramImage(
+                    $request->file('image')
+                );
+
+                $imageUrl = $uploadedImage['url'];
+                $imagePublicId = $uploadedImage['public_id'];
             }
 
-            $image = $request->file('image');
+            $instagram->update([
+                'image' => $imageUrl,
+                'image_public_id' => $imagePublicId,
+                'link' => $request->link,
+                'status' => $request->has('status') ? 1 : 0,
+                'display_order' => $request->display_order ?? 0,
+            ]);
 
-            $imageName = time() . '_' . uniqid() . '.' .
-                $image->getClientOriginalExtension();
+            if ($uploadedImage) {
+                if ($oldPublicId) {
+                    $this->deleteInstagramImage($oldPublicId);
+                } else {
+                    $this->deleteLegacyImage($oldImage);
+                }
+            }
 
-            $image->move(
-                public_path('uploads/instagram'),
-                $imageName
-            );
+            return redirect()
+                ->route('admin.instagram.index')
+                ->with('success', 'Instagram image updated successfully.');
+
+        } catch (\Throwable $e) {
+            if ($uploadedImage) {
+                $this->deleteInstagramImage($uploadedImage['public_id']);
+            }
+
+            Log::error('Instagram Image Update Failed', [
+                'gallery_id' => $instagram->id,
+                'message' => $e->getMessage(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->with('error', 'Instagram image update failed. Please try again.');
         }
-
-        $instagram->update([
-            'image' => $imageName,
-            'link' => $request->link,
-            'status' => $request->has('status') ? 1 : 0,
-            'display_order' => $request->display_order ?? 0,
-        ]);
-
-        return redirect()
-            ->route('admin.instagram.index')
-            ->with('success', 'Instagram image updated successfully.');
     }
 
     public function destroy(InstagramGallery $instagram)
     {
-        $imagePath = public_path(
-            'uploads/instagram/' . $instagram->image
-        );
+        $publicId = $instagram->image_public_id;
+        $image = $instagram->image;
 
-        if (File::exists($imagePath)) {
-            File::delete($imagePath);
+        try {
+            $instagram->delete();
+
+            if ($publicId) {
+                $this->deleteInstagramImage($publicId);
+            } else {
+                $this->deleteLegacyImage($image);
+            }
+
+            return redirect()
+                ->route('admin.instagram.index')
+                ->with('success', 'Instagram image deleted successfully.');
+
+        } catch (\Throwable $e) {
+            Log::error('Instagram Image Delete Failed', [
+                'gallery_id' => $instagram->id,
+                'message' => $e->getMessage(),
+            ]);
+
+            return back()
+                ->with('error', 'Instagram image delete failed.');
         }
-
-        $instagram->delete();
-
-        return redirect()
-            ->route('admin.instagram.index')
-            ->with('success', 'Instagram image deleted successfully.');
     }
 }

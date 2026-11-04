@@ -8,6 +8,7 @@ class InstagramGallery extends Model
 {
     protected $fillable = [
         'image',
+        'image_public_id',
         'link',
         'status',
         'display_order',
