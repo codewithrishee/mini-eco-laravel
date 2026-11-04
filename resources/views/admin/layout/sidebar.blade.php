@@ -52,21 +52,38 @@
         </a>
 
 
-        <!-- ================= SHOP ================= -->
+        
+<!-- ================= SHOP ================= -->
 
-        <div class="sidebar-section-title">
-            SHOP
-        </div>
+<div class="sidebar-section-title">
+    SHOP
+</div>
 
-        <a href="products" class="nav-link">
-            <i class="bi bi-box-seam-fill"></i>
-            Products
-        </a>
+<a href="{{ route('admin.products.index') }}" class="nav-link">
+    <i class="bi bi-box-seam-fill"></i>
+    Products
+</a>
 
-        <a href="attributes" class="nav-link">
-            <i class="bi bi-box-seam-fill"></i>
-            size,color
-        </a>
+<a href="{{ route('admin.attributes.index', 'sizes') }}" class="nav-link">
+    <i class="bi bi-rulers"></i>
+    Sizes
+</a>
+
+<a href="{{ route('admin.attributes.index', 'colors') }}" class="nav-link">
+    <i class="bi bi-palette-fill"></i>
+    Colors
+</a>
+
+<a href="{{ route('admin.attributes.index', 'materials') }}" class="nav-link">
+    <i class="bi bi-layers-fill"></i>
+    Materials
+</a>
+
+<a href="{{ route('admin.attributes.index', 'tags') }}" class="nav-link">
+    <i class="bi bi-tags-fill"></i>
+    Tags
+</a>
+
 
         <!-- ================= ABOUT ================= -->
 
@@ -735,4 +752,270 @@
         background: #4b5563;
         border-radius: 10px;
     }
+
+    
+/* =====================================
+   RESPONSIVE SIDEBAR IMPROVEMENTS
+===================================== */
+
+/* Smooth scrolling */
+.sidebar,
+.offcanvas-sidebar .offcanvas-body {
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 transparent;
+    overscroll-behavior: contain;
+}
+
+.sidebar {
+    scroll-behavior: smooth;
+}
+
+/* Sidebar logo improvement */
+.sidebar .logo h4 {
+    font-size: 1.4rem;
+}
+
+.sidebar .logo {
+    padding-bottom: 1.25rem;
+}
+
+/* Better sidebar links */
+.sidebar .nav-link,
+.offcanvas-sidebar .nav-link {
+    min-height: 44px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    position: relative;
+}
+
+.sidebar .nav-link i,
+.offcanvas-sidebar .nav-link i {
+    flex-shrink: 0;
+}
+
+.sidebar .nav-link:hover,
+.offcanvas-sidebar .nav-link:hover {
+    transform: translateX(3px);
+}
+
+/* Section headings */
+.sidebar-section-title {
+    font-size: 0.67rem;
+    opacity: 0.85;
+}
+
+/* Offcanvas improvement */
+.offcanvas-sidebar {
+    width: min(85vw, 300px) !important;
+    max-width: 300px;
+    height: 100dvh;
+    border: none;
+}
+
+.offcanvas-sidebar .offcanvas-header {
+    min-height: 75px;
+}
+
+.offcanvas-sidebar .offcanvas-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 25px !important;
+}
+
+.offcanvas-sidebar nav {
+    padding-bottom: 20px;
+}
+
+/* =====================================
+   TABLET RESPONSIVE
+===================================== */
+
+@media (max-width: 991.98px) {
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .topbar {
+        padding: 12px 18px;
+        gap: 12px;
+    }
+
+    .topbar .search-box {
+        max-width: 220px;
+    }
+
+    .stat-card {
+        padding: 1.2rem 1rem;
+    }
+
+    .card-custom .card-header {
+        padding: 1rem 1.2rem;
+    }
+}
+
+/* =====================================
+   MOBILE RESPONSIVE
+===================================== */
+
+@media (max-width: 575.98px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .main-content {
+        width: 100%;
+        min-width: 0;
+        margin: 0 !important;
+    }
+
+    /* Topbar */
+    .topbar {
+        padding: 12px 14px;
+        gap: 10px;
+        min-height: 62px;
+    }
+
+    .topbar .search-box {
+        max-width: 100%;
+    }
+
+    .sidebar-toggle {
+        font-size: 1.6rem;
+        padding: 5px 8px;
+        border-radius: 8px;
+    }
+
+    .sidebar-toggle:hover {
+        background: #f1f5f9;
+    }
+
+    /* Mobile navigation */
+    .offcanvas-sidebar .nav-link {
+        padding: 12px 16px;
+        margin: 3px 10px;
+        font-size: 14px;
+        border-radius: 9px;
+        min-height: 46px;
+    }
+
+    .offcanvas-sidebar .nav-link i {
+        font-size: 18px;
+        width: 24px;
+    }
+
+    .offcanvas-sidebar .sidebar-section-title {
+        padding: 18px 20px 7px;
+        margin: 0;
+        font-size: 10px;
+        letter-spacing: 1.3px;
+    }
+
+    .offcanvas-sidebar .nav-link.active {
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2);
+    }
+
+    /* Dashboard cards */
+    .stat-card {
+        padding: 1rem;
+        border-radius: 13px;
+    }
+
+    .stat-card .stat-number {
+        font-size: 1.65rem;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .stat-card .stat-icon {
+        font-size: 1.8rem;
+        right: 12px;
+        bottom: 12px;
+    }
+
+    /* Custom cards */
+    .card-custom {
+        border-radius: 13px;
+    }
+
+    .card-custom .card-header {
+        padding: 14px 16px;
+    }
+
+    .card-custom .card-body {
+        padding: 14px;
+    }
+
+    /* Tables */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table {
+        white-space: nowrap;
+    }
+
+    /* Buttons */
+    .quick-action-btn {
+        padding: 9px 13px;
+        font-size: 13px;
+    }
+
+    /* Footer */
+    .footer-dashboard {
+        padding: 16px 12px;
+        margin-top: 1.5rem;
+        font-size: 12px;
+    }
+}
+
+/* =====================================
+   SMALL MOBILE DEVICES
+===================================== */
+
+@media (max-width: 380px) {
+
+    .offcanvas-sidebar {
+        width: 85vw !important;
+    }
+
+    .topbar {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .stat-card .stat-number {
+        font-size: 1.4rem;
+    }
+
+    .stat-card .stat-label {
+        font-size: 11px;
+    }
+
+    .quick-action-btn {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .sidebar,
+    .main-content,
+    .sidebar .nav-link,
+    .offcanvas-sidebar .nav-link {
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+
 </style>

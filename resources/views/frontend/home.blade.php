@@ -235,7 +235,7 @@
         <section class="section-padding">
             <div class="container">
 
-                <div class="offer-banner" style="background-image:url('{{ asset('uploads/banners/' . $offerBanner->image) }}');
+                <div class="offer-banner" style="background-image:url('{{ $imageUrl($offerBanner->image, 'banners') }}');
                            background-size:cover;
                            background-position:center;">
 

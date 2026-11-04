@@ -1,7 +1,8 @@
+
 <!-- Topbar -->
 <div class="topbar">
 
-    <div class="d-flex align-items-center gap-2">
+    <div class="d-flex align-items-center gap-2 topbar-left">
 
         <!-- Mobile Sidebar Toggle -->
         <button class="sidebar-toggle d-lg-none"
@@ -37,15 +38,13 @@
 
     </div>
 
-
-    <div class="d-flex align-items-center gap-3">
+    <div class="d-flex align-items-center gap-3 topbar-right">
 
         <!-- Notification -->
         <div class="notification-bell">
             <i class="bi bi-bell-fill fs-5 text-secondary"></i>
             <span class="badge-dot"></span>
         </div>
-
 
         <!-- Profile Dropdown -->
         @auth
@@ -70,64 +69,134 @@
 
                 </a>
 
-
                 <ul class="dropdown-menu dropdown-menu-end">
 
-                    <!-- Profile -->
                     <li>
-                        <a class="dropdown-item"
-                           href="{{ route('profile.edit') }}">
-
-                            <i class="bi bi-person"></i>
-                            Profile
-
+                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                            <i class="bi bi-person me-2"></i> Profile
                         </a>
                     </li>
 
-
-                    <!-- Settings -->
                     <li>
-                        <a class="dropdown-item"
-                           href="{{ route('profile.edit') }}#password-settings">
-
-                            <i class="bi bi-gear"></i>
-                            Settings
-
+                        <a class="dropdown-item" href="{{ route('profile.edit') }}#password-settings">
+                            <i class="bi bi-gear me-2"></i> Settings
                         </a>
                     </li>
 
+                    <li><hr class="dropdown-divider"></li>
 
                     <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-
-                    <!-- Logout -->
-                    <li>
-
-                        <form method="POST"
-                              action="{{ route('logout') }}"
-                              class="m-0">
-
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
-
-                            <button type="submit"
-                                    class="dropdown-item text-danger">
-
-                                <i class="bi bi-box-arrow-right"></i>
-                                Logout
-
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="bi bi-box-arrow-right me-2"></i> Logout
                             </button>
-
                         </form>
-
                     </li>
 
                 </ul>
-
             </div>
         @endauth
 
     </div>
 
 </div>
+
+@push('styles')
+<style>
+    /* Topbar */
+    .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 18px;
+    }
+
+    .topbar-left,
+    .topbar-right {
+        min-width: 0;
+    }
+
+    .topbar-right {
+        flex-shrink: 0;
+    }
+
+    .search-box {
+        width: 280px;
+        max-width: 100%;
+    }
+
+    .search-box .input-group {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .search-box .form-control {
+        min-width: 0;
+    }
+
+    .sidebar-toggle {
+        flex-shrink: 0;
+    }
+
+    .notification-bell {
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .profile-dropdown {
+        flex-shrink: 0;
+    }
+
+    /* Tablet */
+    @media (max-width: 991.98px) {
+        .topbar {
+            margin-bottom: 16px;
+        }
+
+        .search-box {
+            width: 220px;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 575.98px) {
+        .topbar {
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .topbar-left {
+            flex: 1;
+            gap: 7px !important;
+        }
+
+        .search-box {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .search-box .form-control {
+            font-size: 13px;
+            padding: 8px 5px;
+        }
+
+        .topbar-right {
+            gap: 12px !important;
+        }
+
+        .notification-bell i {
+            font-size: 16px !important;
+        }
+
+        .profile-dropdown img {
+            width: 32px;
+            height: 32px;
+        }
+    }
+</style>
+@endpush
