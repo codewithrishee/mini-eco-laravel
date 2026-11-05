@@ -1,39 +1,29 @@
 @extends('layouts.admin')
 
 @section('content')
+<div class="container-fluid px-4 py-4 contact-message-show-page">
 
-<div class="container-fluid px-4 py-4">
-
-    {{-- PAGE HEADER --}}
+    <!-- Page Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 
         <div>
-
             <a href="{{ route('admin.contact-messages.index') }}"
                class="text-decoration-none text-muted small">
-
                 <i class="bi bi-arrow-left me-1"></i>
                 Back to Contact Messages
-
             </a>
 
             <h4 class="fw-bold text-dark mt-2 mb-1">
-
                 <i class="bi bi-envelope-paper-fill me-2 text-primary"></i>
                 Contact Message
-
             </h4>
 
             <p class="text-muted small mb-0">
                 View customer contact details and message information.
             </p>
-
         </div>
 
-
-        {{-- STATUS --}}
         <div>
-
             <span class="badge
                 {{ $contactMessage->is_read
                     ? 'bg-secondary bg-opacity-10 text-secondary'
@@ -44,393 +34,233 @@
                     {{ $contactMessage->is_read
                         ? 'bi-check-circle'
                         : 'bi-envelope-fill' }}
-                    me-1">
-                </i>
+                    me-1"></i>
 
                 {{ $contactMessage->is_read ? 'Read' : 'New Message' }}
-
             </span>
-
         </div>
 
     </div>
 
-
     <div class="row g-4">
 
-        {{-- ===================================================== --}}
-        {{-- LEFT SIDE --}}
-        {{-- ===================================================== --}}
-
+        <!-- LEFT SIDE -->
         <div class="col-lg-8">
 
-
-            {{-- CUSTOMER INFORMATION --}}
+            <!-- CUSTOMER INFORMATION -->
             <div class="card border-0 shadow-sm rounded-4 mb-4">
 
                 <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-
                     <h5 class="fw-semibold text-dark mb-1">
-
                         <i class="bi bi-person-circle me-2 text-primary"></i>
                         Customer Information
-
                     </h5>
 
                     <p class="text-muted small mb-0">
                         Contact details submitted by the customer.
                     </p>
-
                 </div>
-
 
                 <div class="card-body p-4">
-
                     <div class="row g-4">
 
-
-                        {{-- NAME --}}
+                        <!-- NAME -->
                         <div class="col-md-6">
-
                             <div class="detail-item">
-
-                                <span class="detail-label">
-                                    Name
-                                </span>
+                                <span class="detail-label">Name</span>
 
                                 <div class="detail-value">
-
                                     <i class="bi bi-person me-1 text-muted"></i>
-
                                     {{ $contactMessage->first_name }}
                                     {{ $contactMessage->last_name }}
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        {{-- EMAIL --}}
+                        <!-- EMAIL -->
                         <div class="col-md-6">
-
                             <div class="detail-item">
-
-                                <span class="detail-label">
-                                    Email Address
-                                </span>
+                                <span class="detail-label">Email Address</span>
 
                                 <div class="detail-value">
-
                                     <a href="mailto:{{ $contactMessage->email }}"
                                        class="text-decoration-none">
-
                                         <i class="bi bi-envelope me-1"></i>
-
                                         {{ $contactMessage->email }}
-
                                     </a>
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        {{-- PHONE --}}
+                        <!-- PHONE -->
                         <div class="col-md-6">
-
                             <div class="detail-item">
-
-                                <span class="detail-label">
-                                    Phone Number
-                                </span>
+                                <span class="detail-label">Phone Number</span>
 
                                 <div class="detail-value">
-
                                     @if($contactMessage->phone)
-
                                         <a href="tel:{{ $contactMessage->phone }}"
                                            class="text-decoration-none">
-
                                             <i class="bi bi-telephone me-1"></i>
-
                                             {{ $contactMessage->phone }}
-
                                         </a>
-
                                     @else
-
-                                        <span class="text-muted">
-                                            Not provided
-                                        </span>
-
+                                        <span class="text-muted">Not provided</span>
                                     @endif
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        {{-- RECEIVED --}}
+                        <!-- RECEIVED -->
                         <div class="col-md-6">
-
                             <div class="detail-item">
-
-                                <span class="detail-label">
-                                    Received
-                                </span>
+                                <span class="detail-label">Received</span>
 
                                 <div class="detail-value">
-
                                     <i class="bi bi-calendar3 me-1 text-muted"></i>
-
                                     {{ $contactMessage->created_at->format('d M Y, h:i A') }}
-
                                 </div>
-
                             </div>
-
                         </div>
 
-
                     </div>
-
                 </div>
-
             </div>
 
-
-
-            {{-- MESSAGE DETAILS --}}
+            <!-- MESSAGE DETAILS -->
             <div class="card border-0 shadow-sm rounded-4">
 
                 <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-
                     <h5 class="fw-semibold text-dark mb-1">
-
                         <i class="bi bi-chat-left-text me-2 text-primary"></i>
                         Message Details
-
                     </h5>
 
                     <p class="text-muted small mb-0">
                         Message received through the Contact page.
                     </p>
-
                 </div>
-
 
                 <div class="card-body p-4">
 
-
-                    {{-- SUBJECT --}}
+                    <!-- SUBJECT -->
                     <div class="mb-4">
-
-                        <span class="detail-label">
-                            Subject
-                        </span>
+                        <span class="detail-label">Subject</span>
 
                         <div class="subject-box">
-
                             {{ $contactMessage->subject ?: 'No subject provided' }}
-
                         </div>
-
                     </div>
 
-
-                    {{-- MESSAGE --}}
+                    <!-- MESSAGE -->
                     <div>
-
-                        <span class="detail-label">
-                            Message
-                        </span>
+                        <span class="detail-label">Message</span>
 
                         <div class="message-box">
-
                             {!! nl2br(e($contactMessage->message)) !!}
-
                         </div>
-
                     </div>
 
-
                 </div>
-
             </div>
 
         </div>
 
-
-
-        {{-- ===================================================== --}}
-        {{-- RIGHT SIDE --}}
-        {{-- ===================================================== --}}
-
+        <!-- RIGHT SIDE -->
         <div class="col-lg-4">
 
-
-            {{-- QUICK CONTACT --}}
+            <!-- QUICK CONTACT -->
             <div class="card border-0 shadow-sm rounded-4 mb-4">
 
                 <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-
                     <h5 class="fw-semibold text-dark mb-1">
-
                         <i class="bi bi-headset me-2 text-primary"></i>
                         Quick Contact
-
                     </h5>
 
                     <p class="text-muted small mb-0">
                         Respond directly to this customer.
                     </p>
-
                 </div>
-
 
                 <div class="card-body p-4">
 
-
-                    {{-- EMAIL --}}
+                    <!-- EMAIL -->
                     <a href="mailto:{{ $contactMessage->email }}"
                        class="btn btn-outline-primary rounded-pill w-100 mb-3">
-
                         <i class="bi bi-envelope-fill me-2"></i>
-
                         Send Email
-
                     </a>
 
-
-                    {{-- CALL --}}
+                    <!-- CALL -->
                     @if($contactMessage->phone)
-
                         <a href="tel:{{ $contactMessage->phone }}"
                            class="btn btn-outline-secondary rounded-pill w-100">
-
                             <i class="bi bi-telephone-fill me-2"></i>
-
                             Call Customer
-
                         </a>
-
                     @endif
 
-
                 </div>
-
             </div>
 
-
-
-            {{-- MESSAGE INFO --}}
+            <!-- MESSAGE INFO -->
             <div class="card border-0 shadow-sm rounded-4 mb-4">
 
                 <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-
                     <h5 class="fw-semibold text-dark mb-0">
-
                         <i class="bi bi-info-circle me-2 text-primary"></i>
                         Message Information
-
                     </h5>
-
                 </div>
-
 
                 <div class="card-body p-4">
 
-
                     <div class="info-row">
-
-                        <span>
-                            Message ID
-                        </span>
-
-                        <strong>
-                            #{{ $contactMessage->id }}
-                        </strong>
-
+                        <span>Message ID</span>
+                        <strong>#{{ $contactMessage->id }}</strong>
                     </div>
 
-
                     <div class="info-row">
-
-                        <span>
-                            Status
-                        </span>
+                        <span>Status</span>
 
                         @if($contactMessage->is_read)
-
                             <span class="badge bg-secondary bg-opacity-10 text-secondary">
                                 Read
                             </span>
-
                         @else
-
                             <span class="badge bg-success bg-opacity-10 text-success">
                                 New
                             </span>
-
                         @endif
-
                     </div>
-
 
                     <div class="info-row">
-
-                        <span>
-                            Date
-                        </span>
-
-                        <strong>
-                            {{ $contactMessage->created_at->format('d M Y') }}
-                        </strong>
-
+                        <span>Date</span>
+                        <strong>{{ $contactMessage->created_at->format('d M Y') }}</strong>
                     </div>
-
 
                     <div class="info-row border-0 pb-0">
-
-                        <span>
-                            Time
-                        </span>
-
-                        <strong>
-                            {{ $contactMessage->created_at->format('h:i A') }}
-                        </strong>
-
+                        <span>Time</span>
+                        <strong>{{ $contactMessage->created_at->format('h:i A') }}</strong>
                     </div>
 
-
                 </div>
-
             </div>
 
-
-
-            {{-- DELETE MESSAGE --}}
+            <!-- DELETE MESSAGE -->
             <div class="card border border-danger shadow-sm rounded-4">
 
                 <div class="card-body p-4">
 
                     <h6 class="fw-semibold text-danger mb-2">
-
                         <i class="bi bi-exclamation-triangle-fill me-1"></i>
                         Delete Message
-
                     </h6>
 
                     <p class="text-muted small">
                         Permanently remove this contact message from the system.
                     </p>
-
 
                     <form action="{{ route('admin.contact-messages.destroy', $contactMessage) }}"
                           method="POST"
@@ -439,203 +269,176 @@
                         @csrf
                         @method('DELETE')
 
-
                         <button type="submit"
                                 class="btn btn-outline-danger rounded-pill w-100">
-
                             <i class="bi bi-trash3 me-1"></i>
-
                             Delete Message
-
                         </button>
 
                     </form>
 
                 </div>
-
             </div>
 
-
         </div>
-
     </div>
-
 </div>
-
 @endsection
 
-
 @push('styles')
-
 <style>
-
-    .rounded-4 {
+    .contact-message-show-page .rounded-4 {
         border-radius: 1rem !important;
     }
 
-
-    .bg-opacity-10 {
+    .contact-message-show-page .bg-opacity-10 {
         --bs-bg-opacity: 0.1;
     }
 
+    .contact-message-show-page .card {
+        border-radius: 1rem !important;
+        overflow: hidden;
+    }
 
-    /* ==========================================================
-       DETAIL ITEMS
-    ========================================================== */
+    .contact-message-show-page .card-header,
+    .contact-message-show-page .card-body {
+        background: #fff;
+    }
 
-    .detail-item {
+    /* Detail Items */
+    .contact-message-show-page .detail-item {
         height: 100%;
         padding: 16px;
-
         background: #f8f9fa;
-
         border: 1px solid #edf0f2;
         border-radius: 12px;
     }
 
-
-    .detail-label {
+    .contact-message-show-page .detail-label {
         display: block;
-
         margin-bottom: 7px;
-
         color: #8a9097;
-
         font-size: 0.75rem;
         font-weight: 600;
-
         text-transform: uppercase;
-
         letter-spacing: 0.5px;
     }
 
-
-    .detail-value {
+    .contact-message-show-page .detail-value {
         color: #212529;
-
         font-weight: 500;
-
-        word-break: break-word;
+        overflow-wrap: anywhere;
     }
 
-
-    /* ==========================================================
-       SUBJECT
-    ========================================================== */
-
-    .subject-box {
+    /* Subject */
+    .contact-message-show-page .subject-box {
         padding: 15px 17px;
-
         background: #f8f9fa;
-
         border: 1px solid #edf0f2;
         border-radius: 12px;
-
         color: #212529;
-
         font-weight: 600;
+        overflow-wrap: anywhere;
     }
 
-
-    /* ==========================================================
-       MESSAGE
-    ========================================================== */
-
-    .message-box {
+    /* Message */
+    .contact-message-show-page .message-box {
         min-height: 180px;
-
         padding: 20px;
-
         background: #f8f9fa;
-
         border: 1px solid #edf0f2;
         border-radius: 12px;
-
         color: #495057;
-
         line-height: 1.8;
-
-        word-break: break-word;
+        overflow-wrap: anywhere;
     }
 
-
-    /* ==========================================================
-       MESSAGE INFORMATION
-    ========================================================== */
-
-    .info-row {
+    /* Message Information */
+    .contact-message-show-page .info-row {
         display: flex;
-
         justify-content: space-between;
         align-items: center;
-
         gap: 15px;
-
         padding: 13px 0;
-
         border-bottom: 1px solid #edf0f2;
-
         font-size: 0.88rem;
     }
 
-
-    .info-row > span:first-child {
+    .contact-message-show-page .info-row > span:first-child {
         color: #6c757d;
     }
 
+    .contact-message-show-page .info-row strong {
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
 
-    /* ==========================================================
-       LINKS
-    ========================================================== */
-
-    a {
+    /* Links */
+    .contact-message-show-page a {
         color: #667eea;
     }
 
-
-    a:hover {
+    .contact-message-show-page a:hover {
         color: #4a5fcf;
     }
 
-
-    /* ==========================================================
-       BUTTONS
-    ========================================================== */
-
-    .btn-outline-primary,
-    .btn-outline-secondary,
-    .btn-outline-danger {
+    /* Buttons */
+    .contact-message-show-page .btn-outline-primary,
+    .contact-message-show-page .btn-outline-secondary,
+    .contact-message-show-page .btn-outline-danger {
         border-width: 1.5px;
-
         transition: all 0.25s ease;
     }
 
-
-    .btn-outline-primary:hover,
-    .btn-outline-secondary:hover,
-    .btn-outline-danger:hover {
+    .contact-message-show-page .btn-outline-primary:hover,
+    .contact-message-show-page .btn-outline-secondary:hover,
+    .contact-message-show-page .btn-outline-danger:hover {
         transform: translateY(-2px);
     }
 
-
-    /* ==========================================================
-       RESPONSIVE
-    ========================================================== */
-
     @media (max-width: 767px) {
-
-        .container-fluid {
+        .contact-message-show-page {
             padding-left: 15px !important;
             padding-right: 15px !important;
         }
 
-
-        .message-box {
-            min-height: 130px;
+        .contact-message-show-page h4 {
+            font-size: 1.2rem;
         }
 
+        .contact-message-show-page .card-header {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .contact-message-show-page .card-body {
+            padding: 1rem !important;
+        }
+
+        .contact-message-show-page .detail-item {
+            padding: 14px;
+        }
+
+        .contact-message-show-page .message-box {
+            min-height: 130px;
+            padding: 15px;
+        }
+
+        .contact-message-show-page .btn {
+            min-height: 40px;
+        }
     }
 
-</style>
+    @media (max-width: 400px) {
+        .contact-message-show-page {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
 
+        .contact-message-show-page .info-row {
+            gap: 8px;
+            font-size: 0.82rem;
+        }
+    }
+</style>
 @endpush

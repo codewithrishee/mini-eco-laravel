@@ -1,16 +1,21 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4 py-4">
+<div class="container-fluid px-4 py-4 faqs-page">
+
     <!-- Page Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
             <h4 class="fw-bold text-dark mb-1">
                 <i class="bi bi-question-circle me-2 text-primary"></i>FAQs
             </h4>
-            <p class="text-muted small mb-0">Manage frequently asked questions for the Contact page.</p>
+            <p class="text-muted small mb-0">
+                Manage frequently asked questions for the Contact page.
+            </p>
         </div>
-        <a href="{{ route('admin.faqs.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+
+        <a href="{{ route('admin.faqs.create') }}"
+           class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="bi bi-plus-lg me-1"></i> Add FAQ
         </a>
     </div>
@@ -23,16 +28,21 @@
         </div>
     @endif
 
-    <!-- FAQ Table -->
+    <!-- FAQ Card -->
     <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+
+        <div class="card-header bg-white border-0 pt-4 pb-3 px-4">
             <h5 class="fw-semibold text-dark mb-0">
                 <i class="bi bi-list-ul me-2 text-primary"></i>FAQ List
             </h5>
         </div>
+
         <div class="card-body p-0">
-            <div class="table-responsive">
+
+            <!-- Desktop Table -->
+            <div class="table-responsive desktop-faq-table">
                 <table class="table table-hover align-middle mb-0">
+
                     <thead class="bg-light">
                         <tr>
                             <th scope="col" class="py-3 ps-4" style="width:70px;">#</th>
@@ -42,16 +52,22 @@
                             <th scope="col" class="py-3 pe-4 text-end" style="width:160px;">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($faqs as $faq)
                             <tr>
                                 <td class="ps-4 fw-semibold">{{ $faq->id }}</td>
-                                <td class="fw-medium">{{ $faq->question }}</td>
+
+                                <td class="fw-medium">
+                                    {{ $faq->question }}
+                                </td>
+
                                 <td class="text-muted">
                                     <span title="{{ $faq->answer }}">
                                         {{ \Illuminate\Support\Str::limit($faq->answer, 80) }}
                                     </span>
                                 </td>
+
                                 <td>
                                     @if($faq->status)
                                         <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
@@ -63,27 +79,32 @@
                                         </span>
                                     @endif
                                 </td>
+
                                 <td class="pe-4 text-end">
                                     <div class="d-flex justify-content-end gap-2">
-                                        <!-- Edit -->
+
                                         <a href="{{ route('admin.faqs.edit', $faq->id) }}"
                                            class="btn btn-outline-primary btn-sm rounded-pill px-3"
-                                           data-bs-toggle="tooltip" title="Edit FAQ">
+                                           data-bs-toggle="tooltip"
+                                           title="Edit FAQ">
                                             <i class="bi bi-pencil-square me-1"></i> Edit
                                         </a>
-                                        <!-- Delete -->
+
                                         <form action="{{ route('admin.faqs.destroy', $faq->id) }}"
                                               method="POST"
                                               class="d-inline"
                                               onsubmit="return confirm('Are you sure you want to delete this FAQ?')">
                                             @csrf
                                             @method('DELETE')
+
                                             <button type="submit"
                                                     class="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                                    data-bs-toggle="tooltip" title="Delete FAQ">
+                                                    data-bs-toggle="tooltip"
+                                                    title="Delete FAQ">
                                                 <i class="bi bi-trash3 me-1"></i> Delete
                                             </button>
                                         </form>
+
                                     </div>
                                 </td>
                             </tr>
@@ -92,16 +113,86 @@
                                 <td colspan="5" class="text-center py-5">
                                     <i class="bi bi-question-circle display-3 text-muted opacity-25 d-block mb-3"></i>
                                     <h5 class="fw-light text-muted">No FAQs Found</h5>
-                                    <p class="text-muted small mb-3">Add your first FAQ for the Contact page.</p>
-                                    <a href="{{ route('admin.faqs.create') }}" class="btn btn-primary rounded-pill px-4">
+                                    <p class="text-muted small mb-3">
+                                        Add your first FAQ for the Contact page.
+                                    </p>
+                                    <a href="{{ route('admin.faqs.create') }}"
+                                       class="btn btn-primary rounded-pill px-4">
                                         <i class="bi bi-plus-lg me-1"></i> Add FAQ
                                     </a>
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
+
+            <!-- Mobile FAQ Cards -->
+            <div class="mobile-faq-list">
+                @forelse($faqs as $faq)
+                    <div class="faq-mobile-card">
+
+                        <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                            <div class="faq-question-heading">
+                                <span class="faq-number">#{{ $faq->id }}</span>
+                                <h6 class="fw-bold text-dark mb-0">
+                                    {{ $faq->question }}
+                                </h6>
+                            </div>
+
+                            @if($faq->status)
+                                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                                    Active
+                                </span>
+                            @else
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill">
+                                    Inactive
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="faq-answer">
+                            <span class="faq-label">Answer</span>
+                            <p class="text-muted mb-0">
+                                {{ \Illuminate\Support\Str::limit($faq->answer, 150) }}
+                            </p>
+                        </div>
+
+                        <div class="faq-actions mt-3">
+                            <a href="{{ route('admin.faqs.edit', $faq->id) }}"
+                               class="btn btn-outline-primary rounded-pill">
+                                <i class="bi bi-pencil-square me-1"></i> Edit
+                            </a>
+
+                            <form action="{{ route('admin.faqs.destroy', $faq->id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Are you sure you want to delete this FAQ?')">
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn-outline-danger rounded-pill">
+                                    <i class="bi bi-trash3 me-1"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                @empty
+                    <div class="text-center py-5 px-3">
+                        <i class="bi bi-question-circle display-3 text-muted opacity-25 d-block mb-3"></i>
+                        <h5 class="fw-light text-muted">No FAQs Found</h5>
+                        <p class="text-muted small mb-3">
+                            Add your first FAQ for the Contact page.
+                        </p>
+                        <a href="{{ route('admin.faqs.create') }}"
+                           class="btn btn-primary rounded-pill px-4">
+                            <i class="bi bi-plus-lg me-1"></i> Add FAQ
+                        </a>
+                    </div>
+                @endforelse
+            </div>
+
         </div>
     </div>
 </div>
@@ -109,61 +200,191 @@
 
 @push('styles')
 <style>
-    .rounded-4 {
+    .faqs-page .rounded-4 {
         border-radius: 1rem !important;
     }
-    .bg-opacity-10 {
+
+    .faqs-page .bg-opacity-10 {
         --bs-bg-opacity: 0.1;
     }
-    .table th {
+
+    .faqs-page .card {
+        border-radius: 1rem !important;
+        overflow: hidden;
+    }
+
+    .faqs-page .card-header,
+    .faqs-page .card-body {
+        background: #fff;
+    }
+
+    .faqs-page .table th {
         font-weight: 600;
         font-size: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         color: #6c757d;
         border-bottom: 2px solid #e9ecef;
+        white-space: nowrap;
     }
-    .table td {
+
+    .faqs-page .table td {
         vertical-align: middle;
         padding: 0.75rem 0.5rem;
     }
-    .table tbody tr {
+
+    .faqs-page .table tbody tr {
         transition: background 0.15s ease;
     }
-    .table tbody tr:hover {
+
+    .faqs-page .table tbody tr:hover {
         background-color: #f8f9fc;
     }
-    .btn-outline-primary, .btn-outline-danger {
+
+    .faqs-page .btn-outline-primary,
+    .faqs-page .btn-outline-danger {
         border-width: 1.5px;
     }
-    .btn-primary {
+
+    .faqs-page .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         transition: all 0.3s ease;
     }
-    .btn-primary:hover {
+
+    .faqs-page .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
-    .alert-success {
+
+    .faqs-page .alert-success {
         background-color: #e8f5e9;
         border-left: 4px solid #28a745;
         color: #1e7e34;
     }
-    .card-header {
-        background: #ffffff;
+
+    .faqs-page .mobile-faq-list {
+        display: none;
     }
-    .card-body {
-        background: #ffffff;
+
+    .faqs-page .faq-mobile-card {
+        padding: 16px;
+        border-bottom: 1px solid #edf0f2;
+        background: #fff;
+    }
+
+    .faqs-page .faq-question-heading {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .faqs-page .faq-number {
+        color: #8a9097;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .faqs-page .faq-question-heading h6 {
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .faqs-page .faq-answer {
+        padding: 12px;
+        background: #f8f9fa;
+        border: 1px solid #edf0f2;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .faqs-page .faq-label {
+        display: block;
+        margin-bottom: 5px;
+        color: #8a9097;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .faqs-page .faq-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .faqs-page .faq-actions > a,
+    .faqs-page .faq-actions > form {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .faqs-page .faq-actions button {
+        width: 100%;
+    }
+
+    @media (max-width: 767px) {
+        .faqs-page {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+        .faqs-page h4 {
+            font-size: 1.2rem;
+        }
+
+        .faqs-page .desktop-faq-table {
+            display: none;
+        }
+
+        .faqs-page .mobile-faq-list {
+            display: block;
+        }
+
+        .faqs-page .faq-actions .btn {
+            width: 100%;
+            min-height: 40px;
+        }
+
+        .faqs-page > .d-flex > a {
+            width: 100%;
+            text-align: center;
+        }
+
+        .faqs-page .card-header {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .faqs-page {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        .faqs-page .faq-mobile-card {
+            padding: 14px 12px;
+        }
+
+        .faqs-page .faq-actions {
+            gap: 8px;
+        }
     }
 </style>
 @endpush
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(
+            document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
+
         tooltipTriggerList.map(function (el) {
             return new bootstrap.Tooltip(el);
         });

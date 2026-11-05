@@ -1,8 +1,7 @@
-
 <!-- Topbar -->
-<div class="topbar">
+<div class="topbar d-flex flex-nowrap justify-content-between align-items-center">
 
-    <div class="d-flex align-items-center gap-2 topbar-left">
+    <div class="d-flex align-items-center gap-2 topbar-left flex-shrink-0">
 
         <!-- Mobile Sidebar Toggle -->
         <button class="sidebar-toggle d-lg-none"
@@ -10,7 +9,7 @@
                 data-bs-toggle="offcanvas"
                 data-bs-target="#mobileSidebar"
                 aria-controls="mobileSidebar">
-            <i class="bi bi-list"></i>
+            <i class="bi bi-list fs-4"></i>
         </button>
 
         <!-- Desktop Sidebar Toggle -->
@@ -20,8 +19,8 @@
             <i class="bi bi-chevron-left"></i>
         </button>
 
-        <!-- Search -->
-        <div class="search-box">
+        <!-- Search (Yahan d-none d-sm-block lagaya hai) -->
+        <div class="search-box d-none d-sm-block">
             <div class="input-group">
 
                 <span class="input-group-text bg-transparent border-0">
@@ -38,7 +37,7 @@
 
     </div>
 
-    <div class="d-flex align-items-center gap-3 topbar-right">
+    <div class="d-flex align-items-center gap-3 topbar-right flex-shrink-0">
 
         <!-- Notification -->
         <div class="notification-bell">
@@ -63,7 +62,7 @@
                         height="36"
                     >
 
-                    <span class="d-none d-sm-inline fw-semibold">
+                    <span class="d-none d-md-inline fw-semibold">
                         {{ Auth::user()->name }}
                     </span>
 
@@ -104,24 +103,11 @@
 
 @push('styles')
 <style>
-    /* Topbar */
+    /* Topbar Base */
     .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
         width: 100%;
         min-width: 0;
         margin-bottom: 18px;
-    }
-
-    .topbar-left,
-    .topbar-right {
-        min-width: 0;
-    }
-
-    .topbar-right {
-        flex-shrink: 0;
     }
 
     .search-box {
@@ -134,22 +120,9 @@
         overflow: hidden;
     }
 
-    .search-box .form-control {
-        min-width: 0;
-    }
-
-    .sidebar-toggle {
-        flex-shrink: 0;
-    }
-
     .notification-bell {
         position: relative;
         cursor: pointer;
-        flex-shrink: 0;
-    }
-
-    .profile-dropdown {
-        flex-shrink: 0;
     }
 
     /* Tablet */
@@ -157,45 +130,29 @@
         .topbar {
             margin-bottom: 16px;
         }
-
         .search-box {
             width: 220px;
         }
     }
 
-    /* Mobile */
+    /* Mobile Fix */
     @media (max-width: 575.98px) {
         .topbar {
-            gap: 8px;
+            gap: 8px !important;
             margin-bottom: 20px;
         }
-
-        .topbar-left {
-            flex: 1;
-            gap: 7px !important;
-        }
-
-        .search-box {
-            width: 100%;
-            min-width: 0;
-        }
-
-        .search-box .form-control {
-            font-size: 13px;
-            padding: 8px 5px;
-        }
-
+        
         .topbar-right {
             gap: 12px !important;
         }
 
         .notification-bell i {
-            font-size: 16px !important;
+            font-size: 18px !important;
         }
 
         .profile-dropdown img {
-            width: 32px;
-            height: 32px;
+            width: 32px !important;
+            height: 32px !important;
         }
     }
 </style>

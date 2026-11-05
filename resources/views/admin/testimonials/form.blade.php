@@ -2,35 +2,37 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4 py-4">
+<div class="container-fluid px-3 px-md-4 py-3 py-md-4 testimonial-form-page">
 
-    <!-- Page Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    {{-- Page Header --}}
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 testimonial-form-header">
         <div>
             <h4 class="fw-bold text-dark mb-1">
                 <i class="bi bi-chat-quote me-2 text-primary"></i>
                 {{ isset($testimonial) ? 'Edit Testimonial' : 'Add Testimonial' }}
             </h4>
+
             <p class="text-muted small mb-0">
                 {{ isset($testimonial) ? 'Update customer testimonial details.' : 'Create a new customer testimonial.' }}
             </p>
         </div>
 
-        <a href="{{ route('admin.testimonials.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+        <a href="{{ route('admin.testimonials.index') }}"
+           class="btn btn-outline-secondary rounded-pill px-4 shadow-sm back-btn">
             <i class="bi bi-arrow-left me-1"></i> Back
         </a>
     </div>
 
-    <!-- Error Alert -->
+    {{-- Error Alert --}}
     @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm">
             {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
     @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm">
             <strong>Please fix the following errors:</strong>
             <ul class="mb-0 mt-2">
                 @foreach($errors->all() as $error)
@@ -41,9 +43,9 @@
         </div>
     @endif
 
-    <!-- Form Card -->
+    {{-- Form Card --}}
     <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
+        <div class="card-body p-3 p-md-4">
 
             <form action="{{ isset($testimonial)
                         ? route('admin.testimonials.update', $testimonial->id)
@@ -59,8 +61,8 @@
 
                 <div class="row g-3">
 
-                    <!-- Name -->
-                    <div class="col-md-6">
+                    {{-- Customer Name --}}
+                    <div class="col-12 col-md-6">
                         <label for="name" class="form-label fw-semibold">
                             Customer Name <span class="text-danger">*</span>
                         </label>
@@ -78,8 +80,8 @@
                         @enderror
                     </div>
 
-                    <!-- Designation -->
-                    <div class="col-md-6">
+                    {{-- Designation --}}
+                    <div class="col-12 col-md-6">
                         <label for="designation" class="form-label fw-semibold">
                             Designation <span class="text-danger">*</span>
                         </label>
@@ -97,7 +99,7 @@
                         @enderror
                     </div>
 
-                    <!-- Review -->
+                    {{-- Customer Review --}}
                     <div class="col-12">
                         <label for="review" class="form-label fw-semibold">
                             Customer Review <span class="text-danger">*</span>
@@ -115,8 +117,8 @@
                         @enderror
                     </div>
 
-                    <!-- Rating -->
-                    <div class="col-md-6">
+                    {{-- Rating --}}
+                    <div class="col-12 col-md-6">
                         <label for="rating" class="form-label fw-semibold">
                             Rating <span class="text-danger">*</span>
                         </label>
@@ -137,8 +139,8 @@
                         @enderror
                     </div>
 
-                    <!-- Display Order -->
-                    <div class="col-md-6">
+                    {{-- Display Order --}}
+                    <div class="col-12 col-md-6">
                         <label for="display_order" class="form-label fw-semibold">
                             Display Order
                         </label>
@@ -156,7 +158,7 @@
                         @enderror
                     </div>
 
-                    <!-- Image -->
+                    {{-- Customer Image --}}
                     <div class="col-12">
                         <label for="image" class="form-label fw-semibold">
                             Customer Image
@@ -179,17 +181,17 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
 
-                        <!-- Current Image -->
+                        {{-- Current Image --}}
                         @if(isset($testimonial) && $testimonial->image)
                             <div class="mt-3">
                                 <label class="form-label fw-semibold">Current Image</label>
 
                                 <div>
                                     <img
-                                        src="{{ \Illuminate\Support\Str::startsWith($testimonial->image, ['http://', 'https://']) ? $testimonial->image : asset('uploads/testimonials/' . $testimonial->image) }}"
+                                        src="{{ \Illuminate\Support\Str::startsWith($testimonial->image, ['http://', 'https://', '//']) ? $testimonial->image : asset('uploads/testimonials/' . $testimonial->image) }}"
                                         width="120"
                                         height="120"
-                                        class="rounded-2 border shadow-sm"
+                                        class="rounded-2 border shadow-sm current-image"
                                         style="object-fit: cover;"
                                         alt="{{ $testimonial->name }}">
                                 </div>
@@ -197,8 +199,8 @@
                         @endif
                     </div>
 
-                    <!-- Status -->
-                    <div class="col-12">
+                    {{-- Status --}}
+                    <div class="col-12 col-md-6">
                         <label for="status" class="form-label fw-semibold">
                             Status
                         </label>
@@ -217,16 +219,19 @@
                         </select>
                     </div>
 
-                    <!-- Submit Buttons -->
+                    {{-- Submit Buttons --}}
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow-sm">
-                            <i class="bi bi-check-circle me-1"></i>
-                            {{ isset($testimonial) ? 'Update Testimonial' : 'Save Testimonial' }}
-                        </button>
+                        <div class="testimonial-form-actions">
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i>
+                                {{ isset($testimonial) ? 'Update Testimonial' : 'Save Testimonial' }}
+                            </button>
 
-                        <a href="{{ route('admin.testimonials.index') }}" class="btn btn-outline-secondary rounded-pill px-4 py-2 ms-2">
-                            Cancel
-                        </a>
+                            <a href="{{ route('admin.testimonials.index') }}"
+                               class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                                Cancel
+                            </a>
+                        </div>
                     </div>
 
                 </div>
@@ -238,13 +243,12 @@
 
 @push('styles')
 <style>
-    .rounded-4 {
-        border-radius: 1rem !important;
+    .testimonial-form-page {
+        min-width: 0;
     }
 
-    .form-control-lg,
-    .form-select-lg {
-        font-size: 0.95rem;
+    .rounded-4 {
+        border-radius: 1rem !important;
     }
 
     .form-control:focus,
@@ -256,6 +260,7 @@
     .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
+        color: #fff;
         transition: all 0.3s ease;
     }
 
@@ -269,18 +274,48 @@
         border-width: 1.5px;
     }
 
-    .form-label {
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
-        color: #2c3e50;
+    .testimonial-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
     }
 
-    .card-body {
-        background: #ffffff;
+    .current-image {
+        object-fit: cover;
     }
 
-    .invalid-feedback {
-        font-size: 0.85rem;
+    @media (max-width: 767.98px) {
+        .testimonial-form-header {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 15px;
+        }
+
+        .testimonial-form-header h4 {
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            align-self: flex-start;
+        }
+
+        .testimonial-form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .testimonial-form-actions .btn {
+            width: 100%;
+            min-height: 40px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .testimonial-form-page {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
     }
 </style>
 @endpush

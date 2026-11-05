@@ -1055,3 +1055,45 @@
     .product-card {
         will-change: transform;
     }
+/* ABOUT PAGE MOBILE WIDTH FIX */
+@media (max-width: 767px) {
+
+    .about-hero,
+    .our-story,
+    .mission-vision,
+    .why-choose,
+    .our-values,
+    .customer-promise {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .our-story .row,
+    .mission-vision .row,
+    .why-choose .row,
+    .our-values .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .our-story [class*="col-"],
+    .mission-vision [class*="col-"],
+    .why-choose [class*="col-"],
+    .our-values [class*="col-"] {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .story-image-wrapper,
+    .story-image-wrapper img {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .story-image-floating {
+        right: 0;
+    }
+}

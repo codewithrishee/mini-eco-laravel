@@ -1,10 +1,14 @@
 <!-- Sidebar (desktop) -->
 <div class="sidebar d-none d-lg-block" id="desktopSidebar">
 
-    <div class="logo">
-        <h4>Rv-Store</h4>
-        <small>Admin Panel</small>
-    </div>
+<div class="logo">
+    <a href="{{ route('dashboard') }}">
+        <img src="{{ asset('assets/images/admin-logo.png') }}"
+             alt="RV Store Admin"
+             class="admin-logo">
+    </a>
+    <small>Admin Panel</small>
+</div>
 
     <nav class="nav flex-column">
 
@@ -188,10 +192,13 @@
             View Website
         </a>
 
-        <a href="" class="nav-link">
-            <i class="bi bi-box-arrow-right"></i>
-            Logout
-        </a>
+        <form method="POST" action="{{ route('logout') }}" class="m-0">
+    @csrf
+    <button type="submit" class="nav-link border-0 bg-transparent p-0">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+    </button>
+</form>
 
     </nav>
 </div>
@@ -214,18 +221,16 @@
 
     <div class="offcanvas-body p-0">
 
+        <!-- YAHAN MOBILE MENU DESKTOP KE SATH SYNC KAR DIYA GAYA HAI -->
         <nav class="nav flex-column">
 
             <!-- Dashboard -->
-
             <a href="dashboard" class="nav-link active">
                 <i class="bi bi-speedometer2"></i>
                 Dashboard
             </a>
 
-
             <!-- ================= HOME PAGE ================= -->
-
             <div class="sidebar-section-title">
                 HOME PAGE
             </div>
@@ -260,42 +265,112 @@
                 Instagram Gallery
             </a>
 
-
             <!-- ================= SHOP ================= -->
-
             <div class="sidebar-section-title">
                 SHOP
             </div>
 
-            <a href="products" class="nav-link">
+            <a href="{{ route('admin.products.index') }}" class="nav-link">
                 <i class="bi bi-box-seam-fill"></i>
                 Products
             </a>
 
-            <a href="attributes" class="nav-link">
-                <i class="bi bi-sliders"></i>
-                Product Attributes
+            <a href="{{ route('admin.attributes.index', 'sizes') }}" class="nav-link">
+                <i class="bi bi-rulers"></i>
+                Sizes
+            </a>
+
+            <a href="{{ route('admin.attributes.index', 'colors') }}" class="nav-link">
+                <i class="bi bi-palette-fill"></i>
+                Colors
+            </a>
+
+            <a href="{{ route('admin.attributes.index', 'materials') }}" class="nav-link">
+                <i class="bi bi-layers-fill"></i>
+                Materials
+            </a>
+
+            <a href="{{ route('admin.attributes.index', 'tags') }}" class="nav-link">
+                <i class="bi bi-tags-fill"></i>
+                Tags
+            </a>
+
+            <!-- ================= ABOUT ================= -->
+            <div class="sidebar-section-title">
+                ABOUT
+            </div>
+
+            <a href="our-story" class="nav-link">
+                <i class="bi bi-book"></i>
+                Our Story
             </a>
 
             <a href="mission-vision" class="nav-link">
-                <i class="bi bi-sliders"></i>
-                mission-vision
+                <i class="bi bi-eye"></i>
+                Mission & Vision
             </a>
 
+            <a href="why-us" class="nav-link">
+                <i class="bi bi-question-circle"></i>
+                Why Us
+            </a>
+
+            <a href="core-values" class="nav-link">
+                <i class="bi bi-star"></i>
+                Core Values
+            </a>
+
+            <!-- ================= BLOG ================= -->
+            <div class="sidebar-section-title">
+                BLOG
+            </div>
+
+            <a href="blogs" class="nav-link">
+                <i class="bi bi-newspaper"></i>
+                Blog
+            </a>
+
+            <!-- ================= CONTACT ================= -->
+            <div class="sidebar-section-title">
+                CONTACT
+            </div>
+
+            <a href="contact" class="nav-link">
+                <i class="bi bi-telephone"></i>
+                Contact Info
+            </a>
+
+            <a href="contact-messages" class="nav-link">
+                <i class="bi bi-chat"></i>
+                Contact Message
+            </a>
+
+            <a href="faqs" class="nav-link">
+                <i class="bi bi-question-lg"></i>
+                FAQ
+            </a>
+
+            <a href="store-information" class="nav-link">
+                <i class="bi bi-gear"></i>
+                CONTACT Settings
+            </a>
 
             <!-- ================= ACCOUNT ================= -->
-
             <div class="sidebar-section-title">
                 ACCOUNT
             </div>
 
-            <a href="{{ route('home') }}" class="nav-link" target="_blank">
+            <a href="product-queries" class="nav-link">
+                <i class="bi bi-chat-dots-fill"></i>
+                Product Queries
+            </a>
 
+            <a href="{{ route('home') }}" class="nav-link" target="_blank">
                 <i class="bi bi-box-arrow-up-right"></i>
                 View Website
             </a>
 
-            <a href="#" class="nav-link">
+            <a href="" class="nav-link">
                 <i class="bi bi-box-arrow-right"></i>
                 Logout
             </a>
@@ -1016,6 +1091,26 @@
         transition: none !important;
         scroll-behavior: auto !important;
     }
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.admin-logo {
+    width: 150px;
+    height: 55px;
+    object-fit: contain;
+    object-position: left center;
+}
+
+.logo small {
+    font-size: 12px;
+    color: #999;
+    padding-left: 5px;
 }
 
 </style>

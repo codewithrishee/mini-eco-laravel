@@ -2,10 +2,10 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container-fluid px-4 instagram-form-page">
 
     <!-- Page Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 instagram-form-header">
         <div>
             <h4 class="fw-bold text-dark mb-1">
                 <i class="bi bi-instagram me-2 text-primary"></i>
@@ -14,16 +14,16 @@
             <p class="text-muted small mb-0">Homepage Instagram gallery</p>
         </div>
 
-        <a href="{{ route('admin.instagram.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+        <a href="{{ route('admin.instagram.index') }}"
+           class="btn btn-outline-secondary rounded-pill px-4 shadow-sm instagram-back-btn">
             <i class="bi bi-arrow-left me-1"></i> Back
         </a>
     </div>
 
     <!-- Form Card -->
     <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
+        <div class="card-body p-4 instagram-form-body">
 
-            <!-- Error Alert -->
             @if(session('error'))
                 <div class="alert alert-danger alert-dismissible fade show">
                     {{ session('error') }}
@@ -31,7 +31,6 @@
                 </div>
             @endif
 
-            <!-- Success Alert -->
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show">
                     {{ session('success') }}
@@ -39,7 +38,6 @@
                 </div>
             @endif
 
-            <!-- Validation Errors -->
             @if($errors->any())
                 <div class="alert alert-danger">
                     <strong>Please fix the following errors:</strong>
@@ -100,14 +98,22 @@
                                 Current Image
                             </label>
 
-                            <img
-                                src="{{ \Illuminate\Support\Str::startsWith($gallery->image, ['http://', 'https://']) ? $gallery->image : asset('uploads/instagram/' . $gallery->image) }}"
-                                width="150"
-                                height="150"
-                                class="rounded-2 border shadow-sm"
-                                style="object-fit: cover;"
-                                alt="Instagram"
-                            >
+                            @php
+                                $currentImageUrl = (
+                                    str_starts_with($gallery->image, 'http://') ||
+                                    str_starts_with($gallery->image, 'https://') ||
+                                    str_starts_with($gallery->image, '//')
+                                )
+                                ? $gallery->image
+                                : asset('uploads/instagram/' . $gallery->image);
+                            @endphp
+
+                            <img src="{{ $currentImageUrl }}"
+                                 width="150"
+                                 height="150"
+                                 class="rounded-2 border shadow-sm instagram-current-image"
+                                 style="object-fit: cover;"
+                                 alt="Instagram">
                         </div>
                     @endif
 
@@ -150,7 +156,7 @@
                     </div>
 
                     <!-- Status -->
-                    <div class="col-md-6 d-flex align-items-center">
+                    <div class="col-md-6 d-flex align-items-center instagram-status-field">
                         <div class="form-check form-switch">
                             <input type="checkbox"
                                    name="status"
@@ -167,15 +173,17 @@
 
                     <!-- Submit Buttons -->
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow-sm">
-                            <i class="bi bi-check-circle me-1"></i>
-                            {{ isset($gallery) ? 'Update Image' : 'Save Image' }}
-                        </button>
+                        <div class="instagram-form-actions">
+                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i>
+                                {{ isset($gallery) ? 'Update Image' : 'Save Image' }}
+                            </button>
 
-                        <a href="{{ route('admin.instagram.index') }}"
-                           class="btn btn-outline-secondary rounded-pill px-4 py-2 ms-2">
-                            Cancel
-                        </a>
+                            <a href="{{ route('admin.instagram.index') }}"
+                               class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                                Cancel
+                            </a>
+                        </div>
                     </div>
 
                 </div>
@@ -187,54 +195,105 @@
 
 @push('styles')
 <style>
-    .rounded-4 {
+    .instagram-form-page .rounded-4 {
         border-radius: 1rem !important;
     }
 
-    .form-control:focus {
+    .instagram-form-page .form-control:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
     }
 
-    .btn-primary {
+    .instagram-form-page .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
+    .instagram-form-page .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
 
-    .btn-outline-secondary {
+    .instagram-form-page .btn-outline-secondary {
         border-width: 1.5px;
     }
 
-    .form-label {
+    .instagram-form-page .form-label {
         font-size: 0.9rem;
         margin-bottom: 0.4rem;
         color: #2c3e50;
     }
 
-    .card-body {
+    .instagram-form-page .card-body {
         background: #ffffff;
     }
 
-    .invalid-feedback {
+    .instagram-form-page .invalid-feedback {
         font-size: 0.85rem;
     }
 
-    .form-switch .form-check-input {
+    .instagram-form-page .form-switch .form-check-input {
         width: 3rem;
         height: 1.5rem;
         cursor: pointer;
     }
 
-    .form-switch .form-check-input:checked {
+    .instagram-form-page .form-switch .form-check-input:checked {
         background-color: #667eea;
         border-color: #667eea;
+    }
+
+    .instagram-status-field {
+        min-height: 75px;
+    }
+
+    .instagram-form-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    @media (max-width: 767.98px) {
+        .instagram-form-page {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .instagram-form-header {
+            gap: 15px;
+        }
+
+        .instagram-form-header h4 {
+            font-size: 1.2rem;
+        }
+
+        .instagram-back-btn {
+            width: 100%;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .instagram-form-body {
+            padding: 1rem !important;
+        }
+
+        .instagram-status-field {
+            min-height: auto;
+            padding-top: 8px;
+        }
+
+        .instagram-form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .instagram-form-actions .btn {
+            width: 100%;
+            min-height: 40px;
+        }
     }
 </style>
 @endpush

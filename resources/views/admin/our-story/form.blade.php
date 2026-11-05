@@ -2,10 +2,10 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container-fluid px-4 our-story-edit-page">
 
     <!-- Page Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 our-story-edit-header">
         <div>
             <h4 class="fw-bold text-dark mb-1">
                 <i class="fas fa-pen-fancy me-2 text-primary"></i>Edit Our Story
@@ -13,7 +13,8 @@
             <p class="text-muted small mb-0">Manage the Our Story section of your About page.</p>
         </div>
 
-        <a href="{{ route('admin.our-story.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+        <a href="{{ route('admin.our-story.index') }}"
+           class="btn btn-outline-secondary rounded-pill px-4 shadow-sm our-story-back-btn">
             <i class="fas fa-arrow-left me-1"></i> Back
         </a>
     </div>
@@ -33,7 +34,7 @@
     @endif
 
     @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm">
             {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -41,9 +42,30 @@
 
     <!-- Form Card -->
     <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4 p-lg-5">
+        <div class="card-body p-4 p-lg-5 our-story-edit-card-body">
 
-            <form action="{{ route('admin.our-story.update') }}" method="POST" enctype="multipart/form-data">
+            @php
+                $imageUrl = function ($image) {
+                    if (empty($image)) {
+                        return '';
+                    }
+
+                    if (
+                        str_starts_with($image, 'http://') ||
+                        str_starts_with($image, 'https://') ||
+                        str_starts_with($image, '//')
+                    ) {
+                        return $image;
+                    }
+
+                    return asset('uploads/about/' . $image);
+                };
+            @endphp
+
+            <form action="{{ route('admin.our-story.update') }}"
+                  method="POST"
+                  enctype="multipart/form-data">
+
                 @csrf
                 @method('PUT')
 
@@ -51,6 +73,7 @@
 
                     <!-- Left Column: Images -->
                     <div class="col-lg-5">
+
                         <h5 class="fw-semibold text-dark mb-3">
                             <i class="fas fa-images me-2 text-primary"></i>Story Images
                         </h5>
@@ -62,13 +85,11 @@
                             <div class="mb-2">
                                 @if($ourStory->main_image)
                                     <img
-                                        src="{{ \Illuminate\Support\Str::startsWith($ourStory->main_image, ['http://', 'https://']) ? $ourStory->main_image : asset('uploads/about/' . $ourStory->main_image) }}"
+                                        src="{{ $imageUrl($ourStory->main_image) }}"
                                         alt="Main Story Image"
-                                        class="img-fluid rounded-3 border shadow-sm"
-                                        style="width:100%; height:280px; object-fit:cover;">
+                                        class="img-fluid rounded-3 border shadow-sm our-story-main-preview">
                                 @else
-                                    <div class="border rounded-3 bg-light d-flex align-items-center justify-content-center"
-                                         style="height:280px;">
+                                    <div class="border rounded-3 bg-light d-flex align-items-center justify-content-center our-story-main-placeholder">
                                         <div class="text-center text-muted">
                                             <i class="fas fa-image fa-3x mb-2 d-block"></i>
                                             <p class="mb-0 small">No Main Image</p>
@@ -82,7 +103,7 @@
                                    class="form-control rounded-3 @error('main_image') is-invalid @enderror"
                                    accept=".jpg,.jpeg,.png,.webp">
 
-                            <small class="text-muted">
+                            <small class="text-muted d-block mt-1">
                                 JPEG, PNG or WebP – max 5MB. Leave empty to keep current image.
                             </small>
 
@@ -98,13 +119,11 @@
                             <div class="mb-2">
                                 @if($ourStory->floating_image)
                                     <img
-                                        src="{{ \Illuminate\Support\Str::startsWith($ourStory->floating_image, ['http://', 'https://']) ? $ourStory->floating_image : asset('uploads/about/' . $ourStory->floating_image) }}"
+                                        src="{{ $imageUrl($ourStory->floating_image) }}"
                                         alt="Floating Story Image"
-                                        class="rounded-circle border shadow-sm"
-                                        style="width:140px; height:140px; object-fit:cover;">
+                                        class="rounded-circle border shadow-sm our-story-floating-preview">
                                 @else
-                                    <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center"
-                                         style="width:140px; height:140px;">
+                                    <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center our-story-floating-placeholder">
                                         <i class="fas fa-image fa-2x text-muted"></i>
                                     </div>
                                 @endif
@@ -115,7 +134,7 @@
                                    class="form-control rounded-3 @error('floating_image') is-invalid @enderror"
                                    accept=".jpg,.jpeg,.png,.webp">
 
-                            <small class="text-muted">
+                            <small class="text-muted d-block mt-1">
                                 JPEG, PNG or WebP – max 5MB. Leave empty to keep current image.
                             </small>
 
@@ -123,10 +142,12 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
                     </div>
 
                     <!-- Right Column: Content -->
                     <div class="col-lg-7">
+
                         <h5 class="fw-semibold text-dark mb-3">
                             <i class="fas fa-pencil-alt me-2 text-primary"></i>Story Content
                         </h5>
@@ -134,6 +155,7 @@
                         <!-- Section Tag -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Section Tag</label>
+
                             <input type="text"
                                    name="tag"
                                    class="form-control rounded-3 @error('tag') is-invalid @enderror"
@@ -147,6 +169,7 @@
 
                         <!-- Heading & Highlight -->
                         <div class="row g-3">
+
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">
                                     Heading <span class="text-danger">*</span>
@@ -177,6 +200,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+
                         </div>
 
                         <!-- Story Description -->
@@ -191,7 +215,7 @@
                                       placeholder="Write your story here..."
                                       required>{{ old('description', $ourStory->description) }}</textarea>
 
-                            <small class="text-muted">
+                            <small class="text-muted d-block mt-1">
                                 Press Enter after each paragraph. They will appear separately on the frontend.
                             </small>
 
@@ -201,61 +225,145 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <div class="d-flex justify-content-end mt-4">
+                        <div class="d-flex justify-content-end mt-4 our-story-submit-wrapper">
                             <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow-sm">
                                 <i class="fas fa-save me-1"></i> Update Our Story
                             </button>
                         </div>
+
                     </div>
 
                 </div>
             </form>
         </div>
     </div>
+
 </div>
 @endsection
 
 @push('styles')
 <style>
-    .rounded-4 {
+    /* Our Story Edit Page */
+
+    .our-story-edit-page .rounded-4 {
         border-radius: 1rem !important;
     }
 
-    .form-control:focus {
+    .our-story-edit-page .form-control:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
     }
 
-    .btn-primary {
+    .our-story-edit-page .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
+        color: #fff;
         transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
+    .our-story-edit-page .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
 
-    .btn-outline-secondary {
+    .our-story-edit-page .btn-outline-secondary {
         border-width: 1.5px;
     }
 
-    .form-label {
+    .our-story-edit-page .form-label {
         font-size: 0.9rem;
         margin-bottom: 0.4rem;
         color: #2c3e50;
     }
 
-    .card-body {
+    .our-story-edit-page .card-body {
         background: #ffffff;
     }
 
-    .alert-danger {
+    .our-story-edit-page .alert-danger {
         background-color: #fde8e8;
         border-left: 4px solid #dc3545;
         color: #842029;
+    }
+
+    /* Image Previews */
+    .our-story-main-preview,
+    .our-story-main-placeholder {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+    }
+
+    .our-story-floating-preview,
+    .our-story-floating-placeholder {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 767.98px) {
+        .our-story-edit-page {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .our-story-edit-header {
+            gap: 15px;
+        }
+
+        .our-story-edit-header h4 {
+            font-size: 1.2rem;
+        }
+
+        .our-story-back-btn {
+            width: 100%;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .our-story-edit-card-body {
+            padding: 1rem !important;
+        }
+
+        .our-story-edit-page .row {
+            --bs-gutter-y: 1.25rem;
+        }
+
+        .our-story-main-preview,
+        .our-story-main-placeholder {
+            height: 250px;
+        }
+
+        .our-story-floating-preview,
+        .our-story-floating-placeholder {
+            width: 120px;
+            height: 120px;
+        }
+
+        .our-story-submit-wrapper {
+            display: block !important;
+        }
+
+        .our-story-submit-wrapper .btn {
+            width: 100%;
+            min-height: 42px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .our-story-main-preview,
+        .our-story-main-placeholder {
+            height: 220px;
+        }
+
+        .our-story-floating-preview,
+        .our-story-floating-placeholder {
+            width: 110px;
+            height: 110px;
+        }
     }
 </style>
 @endpush

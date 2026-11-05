@@ -1,13 +1,12 @@
-
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container-fluid px-4 product-form-page">
 
     <!-- Header -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
         <div>
-            <h4 class="fw-bold text-dark mb-1">
+            <h4 class="page-title fw-bold text-dark mb-1">
                 <i class="bi bi-box-seam me-2 text-primary"></i>
                 {{ isset($product) ? 'Edit Product' : 'Add Product' }}
             </h4>
@@ -16,7 +15,7 @@
             </p>
         </div>
 
-        <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+        <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm back-btn">
             <i class="bi bi-arrow-left me-1"></i> Back
         </a>
     </div>
@@ -139,7 +138,7 @@
 
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold d-block">Status</label>
-                                <div class="form-check form-switch mt-2">
+                                <div class="form-check form-switch mt-2 status-switch">
                                     <input type="checkbox" name="status" id="status"
                                            class="form-check-input" value="1"
                                            {{ old('status', $product->status ?? true) ? 'checked' : '' }}>
@@ -379,13 +378,13 @@
                             <div class="mt-2">
                                 <label class="form-label fw-semibold">Current Images</label>
 
-                                <div class="d-flex flex-wrap gap-2">
+                                <div class="existing-images d-flex flex-wrap gap-2">
                                     @foreach($product->images as $image)
                                         <div class="position-relative">
                                             <img src="{{ \Illuminate\Support\Str::startsWith($image->image, ['http://', 'https://']) ? $image->image : asset('uploads/products/' . $image->image) }}"
                                                  alt="Product image"
                                                  width="70" height="70"
-                                                 class="rounded-3 border object-fit-cover">
+                                                 class="existing-img rounded-3 border object-fit-cover">
                                         </div>
                                     @endforeach
                                 </div>
@@ -403,7 +402,7 @@
                     </div>
 
                     <div class="card-body pt-3">
-                        <div class="d-flex flex-wrap gap-3">
+                        <div class="d-flex flex-wrap gap-3 section-checks">
 
                             <div class="form-check">
                                 <input type="checkbox" name="is_featured" id="is_featured"
@@ -441,7 +440,7 @@
         </div>
 
         <!-- Submit Buttons -->
-        <div class="mt-4 d-flex flex-wrap gap-2">
+        <div class="mt-4 d-flex flex-wrap gap-2 form-actions">
             <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow-sm">
                 <i class="bi bi-check-circle me-1"></i>
                 {{ isset($product) ? 'Update Product' : 'Save Product' }}
@@ -460,201 +459,207 @@
 
 @push('styles')
 <style>
-    .rounded-4 {
+    /* ============ SCOPED: Product Form Page ============ */
+
+    .product-form-page .rounded-4 {
         border-radius: 1rem !important;
     }
-    .form-control:focus, .form-select:focus {
+
+    .product-form-page .page-title {
+        font-size: 1.5rem;
+    }
+
+    .product-form-page .form-control:focus,
+    .product-form-page .form-select:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
     }
-    .btn-primary {
+
+    .product-form-page .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
+        color: #fff;
         transition: all 0.3s ease;
     }
-    .btn-primary:hover {
+
+    .product-form-page .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
-    .btn-outline-secondary {
+
+    .product-form-page .btn-outline-secondary {
         border-width: 1.5px;
     }
-    .form-label {
+
+    .product-form-page .form-label {
         font-size: 0.9rem;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.5rem;
         color: #2c3e50;
     }
-    .card-body {
+
+    .product-form-page .card-body {
         background: #ffffff;
     }
-    .invalid-feedback {
+
+    .product-form-page .invalid-feedback {
         font-size: 0.85rem;
     }
-    .form-switch .form-check-input {
+
+    .product-form-page .form-switch .form-check-input {
         width: 3rem;
         height: 1.5rem;
         cursor: pointer;
     }
-    .form-switch .form-check-input:checked {
+
+    .product-form-page .form-switch .form-check-input:checked {
         background-color: #667eea;
         border-color: #667eea;
     }
-    .input-group .input-group-text {
+
+    .product-form-page .input-group .input-group-text {
         background-color: #fff;
         color: #6c757d;
         border-right: 0;
     }
-    .input-group .form-control:focus {
+
+    .product-form-page .input-group .form-control:focus {
         border-left-color: #667eea;
     }
-    .object-fit-cover {
+
+    .product-form-page .object-fit-cover {
         object-fit: cover;
     }
 
-    
-/* =========================================
-   PRODUCT FORM
-========================================= */
-
-.rounded-4 {
-    border-radius: 1rem !important;
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    color: #fff;
-}
-
-.btn-outline-secondary {
-    border-width: 1.5px;
-}
-
-.form-label {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    color: #2c3e50;
-}
-
-.card-body {
-    background: #fff;
-}
-
-.invalid-feedback {
-    font-size: 0.85rem;
-}
-
-.form-switch .form-check-input {
-    width: 3rem;
-    height: 1.5rem;
-    cursor: pointer;
-}
-
-.form-switch .form-check-input:checked {
-    background-color: #667eea;
-    border-color: #667eea;
-}
-
-.input-group .input-group-text {
-    background-color: #fff;
-    color: #6c757d;
-    border-right: 0;
-}
-
-.input-group .form-control:focus {
-    border-left-color: #667eea;
-}
-
-.object-fit-cover {
-    object-fit: cover;
-}
-
-/* =========================================
-   MULTI SELECT ATTRIBUTE CHIPS
-========================================= */
-
-.attribute-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-}
-
-.attribute-chip {
-    position: relative;
-    display: inline-flex;
-    margin: 0;
-    cursor: pointer;
-    user-select: none;
-}
-
-.attribute-chip input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-}
-
-.attribute-chip span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 45px;
-    min-height: 38px;
-    padding: 8px 16px;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    background: #fff;
-    color: #495057;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.attribute-chip:hover span {
-    border-color: #667eea;
-    color: #667eea;
-    background: #f7f8ff;
-}
-
-.attribute-chip input:checked + span {
-    background: #667eea;
-    color: #fff;
-    border-color: #667eea;
-    box-shadow: 0 3px 8px rgba(102, 126, 234, 0.2);
-}
-
-.attribute-chip input:focus-visible + span {
-    outline: 2px solid #667eea;
-    outline-offset: 3px;
-}
-
-/* Mobile */
-@media (max-width: 576px) {
-    .attribute-options {
-        gap: 8px;
+    /* Card header heading size */
+    .product-form-page .card-header h5 {
+        font-size: 1.1rem;
     }
 
-    .attribute-chip span {
-        min-height: 36px;
-        padding: 7px 12px;
-        font-size: 12px;
+    @media (min-width: 768px) {
+        .product-form-page .card-header h5 {
+            font-size: 1.25rem;
+        }
     }
-}
 
+    /* Attribute chips */
+    .product-form-page .attribute-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .product-form-page .attribute-chip {
+        position: relative;
+        display: inline-flex;
+        margin: 0;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .product-form-page .attribute-chip input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    .product-form-page .attribute-chip span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 45px;
+        min-height: 38px;
+        padding: 8px 16px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: #fff;
+        color: #495057;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .product-form-page .attribute-chip:hover span {
+        border-color: #667eea;
+        color: #667eea;
+        background: #f7f8ff;
+    }
+
+    .product-form-page .attribute-chip input:checked + span {
+        background: #667eea;
+        color: #fff;
+        border-color: #667eea;
+        box-shadow: 0 3px 8px rgba(102, 126, 234, 0.2);
+    }
+
+    .product-form-page .attribute-chip input:focus-visible + span {
+        outline: 2px solid #667eea;
+        outline-offset: 3px;
+    }
+
+    /* Section checks */
+    .product-form-page .section-checks .form-check {
+        margin-bottom: 0;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 767.98px) {
+        .product-form-page .page-title {
+            font-size: 1.2rem;
+        }
+
+        .product-form-page .back-btn {
+            width: 100%;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+        }
+
+        .product-form-page .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .product-form-page .form-actions .btn {
+            width: 100%;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .product-form-page .attribute-options {
+            gap: 8px;
+        }
+
+        .product-form-page .attribute-chip span {
+            min-height: 38px;
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        .product-form-page .existing-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+        }
+
+        .product-form-page .section-checks {
+            gap: 0.75rem !important;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .product-form-page .attribute-chip span {
+            min-height: 36px;
+            padding: 7px 12px;
+            font-size: 12px;
+        }
+    }
 </style>
-
 @endpush

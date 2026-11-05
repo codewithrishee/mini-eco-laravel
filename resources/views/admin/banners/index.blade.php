@@ -2,18 +2,38 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4">
+
+@php
+    $imageUrl = function ($image) {
+        if (empty($image)) {
+            return '';
+        }
+
+        if (
+            str_starts_with($image, 'http://') ||
+            str_starts_with($image, 'https://') ||
+            str_starts_with($image, '//')
+        ) {
+            return $image;
+        }
+
+        return asset('uploads/banners/' . $image);
+    };
+@endphp
+
+<div class="container-fluid px-3 px-md-4 banners-page">
 
     <!-- Page Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-        <div>
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 banners-header">
+        <div class="banners-heading">
             <h4 class="fw-bold text-dark mb-1">
                 <i class="bi bi-images me-2 text-primary"></i>Home Banners
             </h4>
             <p class="text-muted small mb-0">Manage your homepage banner slides.</p>
         </div>
 
-        <a href="{{ route('admin.banners.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+        <a href="{{ route('admin.banners.create') }}"
+           class="btn btn-primary rounded-pill px-4 shadow-sm add-banner-btn">
             <i class="bi bi-plus-circle me-1"></i> Add Banner
         </a>
     </div>
@@ -27,10 +47,11 @@
     @endif
 
     <!-- Banners Table -->
-    <div class="card border-0 shadow-sm rounded-4">
+    <div class="card border-0 shadow-sm rounded-4 banners-card">
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive banners-table-wrapper">
+                <table class="table table-hover align-middle mb-0 banners-table">
+
                     <thead class="bg-light">
                         <tr>
                             <th scope="col" class="py-3 ps-4">ID</th>
@@ -48,16 +69,22 @@
                                 <td class="ps-4 fw-semibold">{{ $banner->id }}</td>
 
                                 <td>
-                                    <img
-                                        src="{{ \Illuminate\Support\Str::startsWith($banner->image, ['http://', 'https://']) ? $banner->image : asset('uploads/banners/' . $banner->image) }}"
-                                        width="80"
-                                        height="55"
-                                        class="rounded-2 border object-fit-cover"
-                                        alt="{{ $banner->title }}"
-                                    >
+                                    @if($banner->image)
+                                        <img
+                                            src="{{ $imageUrl($banner->image) }}"
+                                            width="80"
+                                            height="55"
+                                            class="rounded-2 border banner-image"
+                                            alt="{{ $banner->title }}"
+                                        >
+                                    @else
+                                        <span class="text-muted small">No image</span>
+                                    @endif
                                 </td>
 
-                                <td class="fw-medium">{{ $banner->title }}</td>
+                                <td class="fw-medium banner-title">
+                                    {{ $banner->title }}
+                                </td>
 
                                 <td>
                                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
@@ -78,7 +105,7 @@
                                 </td>
 
                                 <td class="pe-4 text-end">
-                                    <div class="d-flex justify-content-end gap-2">
+                                    <div class="d-flex justify-content-end gap-2 banner-actions">
 
                                         <a href="{{ route('admin.banners.edit', $banner->id) }}"
                                            class="btn btn-outline-primary btn-sm rounded-pill px-3">
@@ -106,11 +133,14 @@
                                 <td colspan="6" class="text-center py-5">
                                     <i class="bi bi-image display-3 text-muted opacity-25 d-block mb-3"></i>
                                     <h5 class="fw-light text-muted">No Banner Found</h5>
-                                    <p class="text-muted small mb-0">Click "Add Banner" to create your first banner.</p>
+                                    <p class="text-muted small mb-0">
+                                        Click "Add Banner" to create your first banner.
+                                    </p>
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
         </div>
@@ -121,6 +151,10 @@
 
 @push('styles')
 <style>
+    .banners-page {
+        min-width: 0;
+    }
+
     .rounded-4 {
         border-radius: 1rem !important;
     }
@@ -129,26 +163,36 @@
         --bs-bg-opacity: 0.1;
     }
 
-    .table th {
+    .banners-card {
+        overflow: hidden;
+    }
+
+    .banners-table th {
         font-weight: 600;
         font-size: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         color: #6c757d;
         border-bottom: 2px solid #e9ecef;
+        white-space: nowrap;
     }
 
-    .table td {
+    .banners-table td {
         vertical-align: middle;
         padding: 0.75rem 0.5rem;
     }
 
-    .table tbody tr {
+    .banners-table tbody tr {
         transition: background 0.15s ease;
     }
 
-    .table tbody tr:hover {
+    .banners-table tbody tr:hover {
         background-color: #f8f9fc;
+    }
+
+    .banner-image {
+        object-fit: cover;
+        display: block;
     }
 
     .btn-outline-primary,
@@ -173,6 +217,86 @@
         background-color: #e8f5e9;
         border-left: 4px solid #28a745;
         color: #1e7e34;
+    }
+
+    /* Tablet and Mobile */
+    @media (max-width: 767.98px) {
+
+        .banners-page {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .banners-header {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 16px;
+        }
+
+        .banners-heading h4 {
+            font-size: 1.2rem;
+        }
+
+        .banners-heading p {
+            font-size: 0.8rem;
+        }
+
+        .add-banner-btn {
+            width: 100%;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .banners-card {
+            border-radius: 12px !important;
+        }
+
+        .banners-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .banners-table {
+            min-width: 720px;
+        }
+
+        .banners-table th,
+        .banners-table td {
+            white-space: nowrap;
+        }
+
+        .banner-title {
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .banner-actions {
+            flex-wrap: nowrap;
+        }
+
+        .banner-actions .btn {
+            white-space: nowrap;
+        }
+    }
+
+    /* Small Mobile */
+    @media (max-width: 400px) {
+
+        .banners-page {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        .banners-heading h4 {
+            font-size: 1.1rem;
+        }
+
+        .banners-header {
+            margin-bottom: 20px !important;
+        }
     }
 </style>
 @endpush

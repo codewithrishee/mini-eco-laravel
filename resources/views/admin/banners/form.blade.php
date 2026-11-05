@@ -2,10 +2,10 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container-fluid px-3 px-md-4 banner-form-page">
 
     <!-- Page Heading -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 banner-form-header">
         <div>
             <h4 class="fw-bold text-dark mb-1">
                 {{ isset($banner) ? 'Edit Banner' : 'Add Banner' }}
@@ -15,14 +15,15 @@
             </p>
         </div>
 
-        <a href="{{ route('admin.banners.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+        <a href="{{ route('admin.banners.index') }}"
+           class="btn btn-outline-secondary rounded-pill px-4 shadow-sm back-btn">
             <i class="bi bi-arrow-left me-1"></i> Back
         </a>
     </div>
 
     <!-- Form Card -->
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
+    <div class="card border-0 shadow-sm rounded-4 banner-form-card">
+        <div class="card-body p-3 p-md-4">
 
             <form action="{{ isset($banner) ? route('admin.banners.update', $banner->id) : route('admin.banners.store') }}"
                   method="POST"
@@ -106,13 +107,12 @@
                         @if(isset($banner) && $banner->image)
                             <div class="mt-3">
                                 <label class="form-label fw-semibold">Current Image</label>
-
                                 <div>
                                     <img
-                                        src="{{ \Illuminate\Support\Str::startsWith($banner->image, ['http://', 'https://']) ? $banner->image : asset('uploads/banners/' . $banner->image) }}"
+                                        src="{{ str_starts_with($banner->image, 'http://') || str_starts_with($banner->image, 'https://') || str_starts_with($banner->image, '//') ? $banner->image : asset('uploads/banners/' . $banner->image) }}"
                                         width="180"
                                         height="90"
-                                        class="rounded-2 border shadow-sm object-fit-cover"
+                                        class="rounded-2 border shadow-sm object-fit-cover current-banner-image"
                                         alt="Current banner image">
                                 </div>
                             </div>
@@ -159,14 +159,19 @@
 
                     <!-- Submit Buttons -->
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow-sm">
-                            <i class="bi bi-check-circle me-1"></i> Save Banner
-                        </button>
+                        <div class="d-flex flex-wrap gap-2 banner-form-actions">
 
-                        <a href="{{ route('admin.banners.index') }}"
-                           class="btn btn-outline-secondary rounded-pill px-4 py-2 ms-2">
-                            Cancel
-                        </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i>
+                                {{ isset($banner) ? 'Update Banner' : 'Save Banner' }}
+                            </button>
+
+                            <a href="{{ route('admin.banners.index') }}"
+                               class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                                Cancel
+                            </a>
+
+                        </div>
                     </div>
 
                 </div>
@@ -178,6 +183,10 @@
 
 @push('styles')
 <style>
+    .banner-form-page {
+        min-width: 0;
+    }
+
     .rounded-4 {
         border-radius: 1rem !important;
     }
@@ -197,6 +206,7 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         transition: all 0.3s ease;
+        color: #fff;
     }
 
     .btn-primary:hover {
@@ -215,8 +225,80 @@
         color: #2c3e50;
     }
 
-    .card-body {
-        background: #ffffff;
+    .banner-form-card .card-body {
+        background: #fff;
+    }
+
+    .current-banner-image {
+        max-width: 100%;
+        height: auto;
+        max-height: 120px;
+        object-fit: cover;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 767.98px) {
+        .banner-form-page {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .banner-form-header {
+            align-items: stretch !important;
+        }
+
+        .banner-form-header > div {
+            width: 100%;
+        }
+
+        .banner-form-header h4 {
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        .banner-form-card {
+            border-radius: 14px !important;
+        }
+
+        .banner-form-card .card-body {
+            padding: 16px !important;
+        }
+
+        .banner-form-actions {
+            flex-direction: column;
+        }
+
+        .banner-form-actions .btn {
+            width: 100%;
+            margin: 0 !important;
+            min-height: 44px;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            min-width: 0;
+            font-size: 16px;
+        }
+
+        input[type="file"] {
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .banner-form-page {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        .banner-form-card .card-body {
+            padding: 13px !important;
+        }
     }
 </style>
 @endpush

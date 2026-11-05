@@ -2,10 +2,10 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container-fluid px-4 our-story-page">
 
     <!-- Page Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 our-story-header">
         <div>
             <h4 class="fw-bold text-dark mb-1">
                 <i class="bi bi-book me-2 text-primary"></i>Our Story
@@ -13,7 +13,8 @@
             <p class="text-muted small mb-0">Manage About page Our Story section.</p>
         </div>
 
-        <a href="{{ route('admin.our-story.edit') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+        <a href="{{ route('admin.our-story.edit') }}"
+           class="btn btn-primary rounded-pill px-4 shadow-sm our-story-edit-btn">
             <i class="bi bi-pencil-square me-1"></i> Edit Our Story
         </a>
     </div>
@@ -36,6 +37,24 @@
 
     <!-- Content Card -->
     @if($ourStory)
+        @php
+            $imageUrl = function ($image) {
+                if (empty($image)) {
+                    return '';
+                }
+
+                if (
+                    str_starts_with($image, 'http://') ||
+                    str_starts_with($image, 'https://') ||
+                    str_starts_with($image, '//')
+                ) {
+                    return $image;
+                }
+
+                return asset('uploads/about/' . $image);
+            };
+        @endphp
+
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
             <div class="card-body p-4 p-lg-5">
                 <div class="row g-5 align-items-start">
@@ -46,16 +65,14 @@
 
                             <!-- Main Image -->
                             @if($ourStory->main_image)
-                                <div class="rounded-3 overflow-hidden shadow-sm" style="background: #f8f9fa;">
+                                <div class="rounded-3 overflow-hidden shadow-sm our-story-main-image">
                                     <img
-                                        src="{{ \Illuminate\Support\Str::startsWith($ourStory->main_image, ['http://', 'https://']) ? $ourStory->main_image : asset('uploads/about/' . $ourStory->main_image) }}"
+                                        src="{{ $imageUrl($ourStory->main_image) }}"
                                         class="w-100"
-                                        style="height: 380px; object-fit: cover;"
                                         alt="Our Story">
                                 </div>
                             @else
-                                <div class="bg-light rounded-3 p-5 text-center text-muted"
-                                     style="height: 380px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                <div class="bg-light rounded-3 text-center text-muted our-story-no-image">
                                     <i class="bi bi-image display-3 d-block mb-3"></i>
                                     <span>No Main Image</span>
                                 </div>
@@ -71,18 +88,17 @@
                                 </span>
 
                                 <img
-                                    src="{{ \Illuminate\Support\Str::startsWith($ourStory->floating_image, ['http://', 'https://']) ? $ourStory->floating_image : asset('uploads/about/' . $ourStory->floating_image) }}"
+                                    src="{{ $imageUrl($ourStory->floating_image) }}"
                                     width="110"
                                     height="110"
-                                    style="object-fit: cover;"
-                                    class="rounded-circle border border-3 border-white shadow-sm"
+                                    class="rounded-circle border border-3 border-white shadow-sm our-story-floating-image"
                                     alt="Floating">
                             </div>
                         @endif
                     </div>
 
                     <!-- Text Content -->
-                    <div class="col-lg-7">
+                    <div class="col-lg-7 our-story-content">
 
                         @if($ourStory->tag)
                             <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3">
@@ -90,7 +106,7 @@
                             </span>
                         @endif
 
-                        <h3 class="fw-bold mb-3">
+                        <h3 class="fw-bold mb-3 our-story-title">
                             {{ $ourStory->title }}
 
                             @if($ourStory->highlight_text)
@@ -98,13 +114,15 @@
                             @endif
                         </h3>
 
-                        <div class="text-muted lh-lg">
+                        <div class="text-muted lh-lg our-story-description">
                             @php
                                 $paragraphs = preg_split('/\n+/', trim($ourStory->description));
                             @endphp
 
                             @foreach($paragraphs as $paragraph)
-                                <p>{{ $paragraph }}</p>
+                                @if(trim($paragraph) !== '')
+                                    <p>{{ $paragraph }}</p>
+                                @endif
                             @endforeach
                         </div>
 
@@ -112,6 +130,7 @@
                 </div>
             </div>
         </div>
+
     @else
 
         <!-- Empty State -->
@@ -127,11 +146,13 @@
                     Click the "Edit Our Story" button to add content for this section.
                 </p>
 
-                <a href="{{ route('admin.our-story.edit') }}" class="btn btn-primary rounded-pill px-4">
+                <a href="{{ route('admin.our-story.edit') }}"
+                   class="btn btn-primary rounded-pill px-4 our-story-empty-btn">
                     <i class="bi bi-pencil-square me-1"></i> Edit Our Story
                 </a>
             </div>
         </div>
+
     @endif
 
 </div>
@@ -139,43 +160,151 @@
 
 @push('styles')
 <style>
-    .rounded-4 {
+    /* Our Story Page */
+
+    .our-story-page .rounded-4 {
         border-radius: 1rem !important;
     }
 
-    .bg-opacity-10 {
+    .our-story-page .bg-opacity-10 {
         --bs-bg-opacity: 0.1;
     }
 
-    .btn-primary {
+    .our-story-page .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
+        color: #fff;
         transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
+    .our-story-page .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         color: #fff;
     }
 
-    .alert-success {
+    .our-story-page .alert-success {
         background-color: #e8f5e9;
         border-left: 4px solid #28a745;
         color: #1e7e34;
     }
 
-    .card-body {
+    .our-story-page .card-body {
         background: #ffffff;
     }
 
-    .lh-lg {
+    .our-story-page .lh-lg {
         line-height: 1.8;
     }
 
-    @media (max-width: 768px) {
-        .col-lg-5 img {
-            height: 280px !important;
+    /* Main Image */
+    .our-story-main-image {
+        background: #f8f9fa;
+        width: 100%;
+    }
+
+    .our-story-main-image img {
+        display: block;
+        width: 100%;
+        height: 380px;
+        object-fit: cover;
+    }
+
+    .our-story-no-image {
+        min-height: 380px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .our-story-floating-image {
+        object-fit: cover;
+        max-width: 100%;
+    }
+
+    .our-story-title {
+        overflow-wrap: anywhere;
+    }
+
+    .our-story-description {
+        overflow-wrap: anywhere;
+    }
+
+    .our-story-description p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 767.98px) {
+        .our-story-page {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .our-story-header {
+            gap: 15px;
+        }
+
+        .our-story-header h4 {
+            font-size: 1.2rem;
+        }
+
+        .our-story-edit-btn {
+            width: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .our-story-page .card-body {
+            padding: 1rem !important;
+        }
+
+        .our-story-page .row {
+            --bs-gutter-y: 1.5rem;
+        }
+
+        .our-story-main-image img {
+            height: 280px;
+        }
+
+        .our-story-no-image {
+            min-height: 280px;
+        }
+
+        .our-story-content {
+            width: 100%;
+        }
+
+        .our-story-title {
+            font-size: 1.35rem;
+            line-height: 1.4;
+        }
+
+        .our-story-description {
+            line-height: 1.8;
+        }
+
+        .our-story-empty-btn {
+            width: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .our-story-main-image img {
+            height: 240px;
+        }
+
+        .our-story-no-image {
+            min-height: 240px;
+        }
+
+        .our-story-title {
+            font-size: 1.2rem;
         }
     }
 </style>

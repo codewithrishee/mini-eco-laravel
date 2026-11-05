@@ -2,28 +2,50 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container-fluid px-3 px-md-4 py-3 py-md-4 brands-form-page">
 
-    <!-- Page Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    {{-- Page Header --}}
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 brands-form-header">
         <div>
             <h4 class="fw-bold text-dark mb-1">
                 <i class="bi bi-building me-2 text-primary"></i>
                 {{ isset($brand) ? 'Edit Brand' : 'Add Brand' }}
             </h4>
+
             <p class="text-muted small mb-0">
                 {{ isset($brand) ? 'Update brand details.' : 'Create a new brand.' }}
             </p>
         </div>
 
-        <a href="{{ route('admin.brands.index') }}" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+        <a href="{{ route('admin.brands.index') }}"
+           class="btn btn-outline-secondary rounded-pill px-4 shadow-sm back-btn">
             <i class="bi bi-arrow-left me-1"></i> Back to Brands
         </a>
     </div>
 
-    <!-- Form Card -->
+    {{-- Error Alert --}}
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm">
+            <strong>Please fix the following errors:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    {{-- Form Card --}}
     <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
+        <div class="card-body p-3 p-md-4">
 
             <form action="{{ isset($brand)
                         ? route('admin.brands.update', $brand->id)
@@ -39,7 +61,7 @@
 
                 <div class="row g-3">
 
-                    <!-- Brand Name -->
+                    {{-- Brand Name --}}
                     <div class="col-12">
                         <label for="name" class="form-label fw-semibold">
                             Brand Name <span class="text-danger">*</span>
@@ -58,7 +80,7 @@
                         @enderror
                     </div>
 
-                    <!-- Logo Upload -->
+                    {{-- Logo Upload --}}
                     <div class="col-12">
                         <label for="logo" class="form-label fw-semibold">
                             Brand Logo
@@ -81,25 +103,24 @@
                         @enderror
                     </div>
 
-                    <!-- Current Logo Preview -->
+                    {{-- Current Logo Preview --}}
                     @if(isset($brand) && $brand->logo)
                         <div class="col-12">
                             <label class="form-label fw-semibold">Current Logo</label>
 
                             <div>
                                 <img
-                                    src="{{ \Illuminate\Support\Str::startsWith($brand->logo, ['http://', 'https://']) ? $brand->logo : asset('uploads/brands/' . $brand->logo) }}"
+                                    src="{{ \Illuminate\Support\Str::startsWith($brand->logo, ['http://', 'https://', '//']) ? $brand->logo : asset('uploads/brands/' . $brand->logo) }}"
                                     width="150"
                                     height="80"
-                                    style="object-fit: contain;"
-                                    class="border rounded-2 shadow-sm"
+                                    class="border rounded-2 shadow-sm current-brand-logo"
                                     alt="{{ $brand->name }}">
                             </div>
                         </div>
                     @endif
 
-                    <!-- Display Order -->
-                    <div class="col-md-6">
+                    {{-- Display Order --}}
+                    <div class="col-12 col-md-6">
                         <label for="display_order" class="form-label fw-semibold">
                             Display Order
                         </label>
@@ -112,9 +133,9 @@
                                value="{{ old('display_order', $brand->display_order ?? 0) }}">
                     </div>
 
-                    <!-- Status -->
-                    <div class="col-md-6 d-flex align-items-center">
-                        <div class="form-check form-switch">
+                    {{-- Status --}}
+                    <div class="col-12 col-md-6 d-flex align-items-center">
+                        <div class="form-check form-switch brand-status-switch">
                             <input type="checkbox"
                                    name="status"
                                    value="1"
@@ -128,17 +149,19 @@
                         </div>
                     </div>
 
-                    <!-- Submit Buttons -->
+                    {{-- Submit Buttons --}}
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow-sm">
-                            <i class="bi bi-check-circle me-1"></i>
-                            {{ isset($brand) ? 'Update Brand' : 'Save Brand' }}
-                        </button>
+                        <div class="brands-form-actions">
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i>
+                                {{ isset($brand) ? 'Update Brand' : 'Save Brand' }}
+                            </button>
 
-                        <a href="{{ route('admin.brands.index') }}"
-                           class="btn btn-outline-secondary rounded-pill px-4 py-2 ms-2">
-                            Cancel
-                        </a>
+                            <a href="{{ route('admin.brands.index') }}"
+                               class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                                Cancel
+                            </a>
+                        </div>
                     </div>
 
                 </div>
@@ -150,13 +173,12 @@
 
 @push('styles')
 <style>
-    .rounded-4 {
-        border-radius: 1rem !important;
+    .brands-form-page {
+        min-width: 0;
     }
 
-    .form-control-lg,
-    .form-select-lg {
-        font-size: 0.95rem;
+    .rounded-4 {
+        border-radius: 1rem !important;
     }
 
     .form-control:focus,
@@ -168,6 +190,7 @@
     .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
+        color: #fff;
         transition: all 0.3s ease;
     }
 
@@ -182,8 +205,6 @@
     }
 
     .form-label {
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
         color: #2c3e50;
     }
 
@@ -195,15 +216,64 @@
         font-size: 0.85rem;
     }
 
-    .form-switch .form-check-input {
+    .brand-status-switch .form-check-input {
         width: 3rem;
         height: 1.5rem;
         cursor: pointer;
     }
 
-    .form-switch .form-check-input:checked {
+    .brand-status-switch .form-check-input:checked {
         background-color: #667eea;
         border-color: #667eea;
+    }
+
+    .brands-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .current-brand-logo {
+        object-fit: contain;
+    }
+
+    @media (max-width: 767.98px) {
+        .brands-form-header {
+            flex-direction: column;
+            align-items: stretch !important;
+            gap: 15px;
+        }
+
+        .brands-form-header h4 {
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            align-self: flex-start;
+        }
+
+        .brands-form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .brands-form-actions .btn {
+            width: 100%;
+            min-height: 40px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .brands-form-page {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        .current-brand-logo {
+            max-width: 100%;
+            height: auto;
+        }
     }
 </style>
 @endpush
